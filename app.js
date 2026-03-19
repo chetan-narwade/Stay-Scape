@@ -38,15 +38,24 @@ app.use(express.static(path.join(__dirname, "public")));
 // ─────────────────────────────────────────────────────────
 //  SESSION
 // ─────────────────────────────────────────────────────────
+app.set("trust proxy", 1);
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET is missing");
+}
+
 const sessionConfig = {
-    secret: process.env.SESSION_SECRET || "fallback-dev-secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7
-    }
+  name: "stay-scape-session",
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  proxy: true,
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  }
 };
 
 app.use(session(sessionConfig));
