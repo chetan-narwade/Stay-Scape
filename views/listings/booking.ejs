@@ -1,0 +1,1007 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   BOOKING PAGE — blue/cyan palette, Inter font
+═══════════════════════════════════════════════════════════ */
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideIn { from{opacity:0;transform:translateY(8px)}  to{opacity:1;transform:translateY(0)} }
+
+/* ── PAGE ── */
+.bk-page {
+  min-height: 100vh; background: var(--bg);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 48px 20px 80px; position: relative; overflow: hidden;
+}
+.bk-page::before {
+  content: ''; position: absolute; top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── TWO-COL LAYOUT ── */
+.bk-wrap {
+  width: 100%; max-width: 900px;
+  display: grid; grid-template-columns: 1fr 360px;
+  gap: 28px; align-items: start;
+  position: relative; z-index: 1;
+  animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* ════════ LEFT COLUMN ════════ */
+.bk-preview { display: flex; flex-direction: column; gap: 20px; }
+
+/* inner grouping wrappers */
+.bk-img-wrap     { display: contents; }
+.bk-info-wrap    { display: contents; }
+.bk-bottom-preview { display: contents; }
+
+/* listing image */
+.bk-img {
+  position: relative; width: 100%; height: 280px;
+  border-radius: 18px; overflow: hidden; border: 1px solid var(--border);
+}
+.bk-img img {
+  width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease;
+}
+.bk-img:hover img { transform: scale(1.04); }
+.bk-img-ov {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,15,.55) 0%, transparent 55%);
+}
+.bk-img-badge {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  padding: 4px 12px;
+  background: rgba(10,10,15,.75);
+  border: 1px solid rgba(59,130,246,.3); border-radius: 999px;
+  font-size: 10px; letter-spacing: .08em; text-transform: capitalize;
+  color: var(--blue); font-weight: 500; backdrop-filter: blur(8px);
+}
+.bk-img-price {
+  position: absolute; bottom: 14px; right: 14px; z-index: 2;
+  background: rgba(10,10,15,.82);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 10px 14px; backdrop-filter: blur(12px); text-align: right;
+}
+.bk-img-price-num { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1; }
+.bk-img-price-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* listing info card */
+.bk-info {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px 24px;
+}
+.bk-eyebrow {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.bk-eyebrow::before {
+  content: ''; display: block; width: 16px; height: 1px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+.bk-title {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 300; color: var(--text); line-height: 1.15; margin-bottom: 10px;
+}
+.bk-loc {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--muted); margin-bottom: 16px;
+}
+.bk-loc svg { width: 12px; height: 12px; color: var(--cyan); flex-shrink: 0; }
+.bk-feats { display: flex; gap: 7px; flex-wrap: wrap; }
+.bk-feat {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px;
+  background: var(--s3); border: 1px solid var(--border); border-radius: 999px;
+  font-size: 11px; color: var(--muted);
+}
+.bk-feat svg { width: 12px; height: 12px; color: var(--cyan); flex-shrink: 0; }
+
+/* booked notice */
+.bk-booked-notice {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 20px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.bk-booked-notice svg { width: 14px; height: 14px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+.bk-booked-notice-title {
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600; margin-bottom: 6px;
+}
+.bk-booked-range {
+  font-size: 12px; color: var(--muted); padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.bk-booked-range:last-child { border-bottom: none; padding-bottom: 0; }
+
+/* price breakdown */
+.bk-breakdown {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 24px;
+}
+.bk-breakdown-title {
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 7px;
+}
+.bk-breakdown-title::before {
+  content: ''; display: block; width: 14px; height: 1px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+.bk-bd-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.bk-bd-row:last-child { border-bottom: none; padding-bottom: 0; }
+.bk-bd-lbl { color: var(--muted); }
+.bk-bd-val { color: var(--text); font-weight: 700; font-size: 14px; }
+.bk-bd-total .bk-bd-lbl { color: var(--text); font-weight: 600; }
+.bk-bd-total .bk-bd-val { color: var(--blue); font-size: 18px; }
+
+/* ════════ RIGHT COLUMN — FORM CARD ════════ */
+.bk-form-card {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  position: sticky; top: 80px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+.bk-form-head {
+  padding: 24px 24px 20px;
+  background: var(--s1); border-bottom: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.bk-form-head::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+.bk-form-eyebrow {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px; position: relative; z-index: 1;
+}
+.bk-form-eyebrow::before {
+  content: ''; display: block; width: 14px; height: 1px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+.bk-form-title {
+  font-family: var(--font-heading);
+  font-size: 20px; font-weight: 300; color: var(--text); line-height: 1.1;
+  position: relative; z-index: 1;
+}
+.bk-form-title em { font-style: italic; color: var(--cyan); }
+.bk-form-price {
+  display: flex; align-items: baseline; gap: 3px; margin-top: 8px;
+  position: relative; z-index: 1;
+}
+.bk-form-price-n { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; }
+.bk-form-price-u { font-size: 12px; color: var(--muted); }
+.bk-form-body { padding: 20px 22px; }
+
+/* ── ERROR ── */
+.bk-err {
+  display: none; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.28);
+  border-radius: 10px; font-size: 12px; color: var(--danger);
+  margin-bottom: 14px;
+  animation: slideIn .25s ease both;
+}
+.bk-err.show { display: flex; }
+.bk-err svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── NIGHTS BADGE ── */
+.bk-nights-badge {
+  display: none; align-items: center; justify-content: center; gap: 6px;
+  padding: 7px 14px;
+  background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.25);
+  border-radius: 999px; font-size: 12px; color: var(--blue);
+  margin-bottom: 14px;
+  animation: slideIn .3s ease both;
+}
+.bk-nights-badge.show { display: flex; }
+.bk-nights-badge svg { width: 13px; height: 13px; }
+
+/* ── DATE DISPLAY ── */
+.bk-date-display {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; margin-bottom: 14px;
+}
+.bk-date-display-field {
+  padding: 10px 14px; background: var(--s3); transition: background .2s;
+}
+.bk-date-display-field:first-child { border-right: 1px solid var(--border); }
+.bk-date-display-label {
+  font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 4px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+.bk-date-display-label svg { width: 9px; height: 9px; }
+.bk-date-display-val { font-size: 13px; color: var(--text); font-weight: 500; }
+.bk-date-display-val.empty { color: var(--muted); font-size: 11px; font-weight: 400; }
+
+/* ── CALENDAR ── */
+.bk-cal-wrap {
+  margin-bottom: 16px; border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; background: var(--s3);
+}
+.bk-cal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 10px;
+  background: var(--s1); border-bottom: 1px solid var(--border);
+}
+.bk-cal-nav {
+  width: 30px; height: 30px;
+  background: rgba(59,130,246,.08);
+  border: 1px solid rgba(59,130,246,.2); border-radius: 8px;
+  color: var(--blue); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.bk-cal-nav:hover { background: rgba(59,130,246,.15); border-color: var(--blue); transform: scale(1.08); }
+.bk-cal-month { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: .02em; }
+.bk-cal-month span { color: var(--blue); }
+.bk-cal-days-hdr {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  padding: 8px 10px 4px;
+}
+.bk-cal-day-lbl {
+  text-align: center; font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); padding: 2px 0;
+}
+.bk-cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 2px; padding: 4px 10px 12px;
+}
+.bk-cal-cell {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; border-radius: 8px; cursor: pointer;
+  position: relative; transition: background .15s, color .15s;
+  color: var(--text); user-select: none; font-weight: 500;
+}
+.bk-cal-cell:hover:not(.disabled):not(.empty):not(.booked) {
+  background: rgba(59,130,246,.12); color: var(--blue);
+}
+.bk-cal-cell.empty   { cursor: default; }
+.bk-cal-cell.disabled {
+  color: var(--muted); cursor: not-allowed; opacity: .4; text-decoration: line-through;
+}
+.bk-cal-cell.booked {
+  color: var(--danger); cursor: not-allowed; opacity: .65;
+  background: rgba(239,68,68,.06);
+}
+.bk-cal-cell.booked::after {
+  content: ''; position: absolute; bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 3px; height: 3px; border-radius: 50%; background: var(--danger);
+}
+.bk-cal-cell.today {
+  border: 1px solid rgba(59,130,246,.35); color: var(--blue);
+}
+.bk-cal-cell.selected-start,
+.bk-cal-cell.selected-end {
+  background: var(--blue) !important;
+  color: #fff !important;
+  font-weight: 700; border-radius: 8px;
+  box-shadow: 0 0 0 2px rgba(59,130,246,.3);
+}
+.bk-cal-cell.in-range {
+  background: rgba(59,130,246,.12); color: var(--blue); border-radius: 0;
+}
+.bk-cal-cell.selected-start { border-radius: 8px 0 0 8px; }
+.bk-cal-cell.selected-end   { border-radius: 0 8px 8px 0; }
+.bk-cal-cell.selected-start.selected-end { border-radius: 8px; }
+
+.bk-date-hidden { display: none; }
+
+/* calendar legend */
+.bk-cal-legend {
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 10px 10px; flex-wrap: wrap;
+}
+.bk-cal-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); }
+.bk-cal-legend-dot  { width: 8px; height: 8px; border-radius: 2px; }
+.bk-cal-legend-dot.avail  { background: var(--s2); border: 1px solid var(--border); }
+.bk-cal-legend-dot.booked { background: rgba(239,68,68,.3); }
+.bk-cal-legend-dot.sel    { background: var(--blue); }
+
+/* ── PAY BUTTON ── */
+.bk-pay-btn {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; padding: 15px 0;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  color: #fff; border: none; border-radius: 999px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+}
+.bk-pay-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(59,130,246,.35);
+  filter: brightness(1.08);
+}
+.bk-pay-btn:active:not(:disabled) { transform: scale(.97); }
+.bk-pay-btn:disabled {
+  opacity: .45; cursor: not-allowed; transform: none; box-shadow: none;
+  background: var(--s3); color: var(--muted);
+}
+
+/* ── TRUST BADGES ── */
+.bk-trust {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.bk-trust-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; color: var(--muted); letter-spacing: .04em;
+}
+.bk-trust-item svg { width: 11px; height: 11px; color: var(--cyan); flex-shrink: 0; }
+
+/* ── FORM FOOTER ── */
+.bk-form-footer {
+  padding: 14px 22px 18px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: var(--muted);
+}
+.bk-form-footer svg { width: 12px; height: 12px; color: var(--blue); flex-shrink: 0; }
+
+/* ══ RESPONSIVE ══════════════════════════════════════════════ */
+
+/* ── TABLET 860px ── */
+@media (max-width: 860px) {
+  .bk-wrap {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+  .bk-form-card { position: static; }
+}
+
+/* ── MOBILE 640px: reorder content ──
+   Target order:
+   1. listing image
+   2. listing info card
+   3. booking form card  ← comes BEFORE breakdown on mobile
+   4. price breakdown + unavailable dates
+*/
+@media (max-width: 640px) {
+  .bk-page { padding: 0 0 60px; }
+  .bk-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 100%;
+  }
+
+  /* kill the flex gap from bk-preview children */
+  .bk-preview { gap: 0; }
+
+  /* use order to resequence */
+  .bk-img-wrap      { order: 1; padding: 14px 14px 0; }
+  .bk-info-wrap     { order: 2; padding: 12px 14px 0; }
+  .bk-form-card     { order: 3; margin-top: 16px; }
+  .bk-bottom-preview{ order: 4; padding: 14px 14px 0; display: flex; flex-direction: column; gap: 14px; }
+
+  /* reset display:contents for mobile so padding works */
+  .bk-img-wrap, .bk-info-wrap, .bk-bottom-preview { display: block; }
+
+  .bk-form-card {
+    border-radius: 0;
+    border-left: none; border-right: none;
+  }
+
+  .bk-img   { height: 200px; border-radius: 14px; }
+  .bk-info  { padding: 16px 18px; }
+  .bk-title { font-size: 17px; }
+
+  .bk-form-head   { padding: 20px 18px 16px; }
+  .bk-form-body   { padding: 16px 16px; }
+  .bk-form-footer { padding: 12px 16px 18px; }
+
+  /* date display stacks vertically */
+  .bk-date-display { grid-template-columns: 1fr; }
+  .bk-date-display-field:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* calendar tighter */
+  .bk-cal-grid     { gap: 1px; padding: 4px 8px 10px; }
+  .bk-cal-days-hdr { padding: 6px 8px 4px; }
+  .bk-cal-cell     { font-size: 11px; }
+
+  .bk-breakdown       { padding: 16px 16px; }
+  .bk-img-price-num   { font-size: 18px; }
+  .bk-feats           { gap: 6px; }
+}
+
+/* ── SMALL MOBILE 380px ── */
+@media (max-width: 380px) {
+  .bk-img-wrap      { padding: 10px 10px 0; }
+  .bk-info-wrap     { padding: 10px 10px 0; }
+  .bk-bottom-preview{ padding: 10px 10px 0; }
+
+  .bk-img    { height: 175px; }
+  .bk-feat   { font-size: 10px; padding: 4px 9px; }
+  .bk-form-body { padding: 14px 14px; }
+  .bk-cal-cell  { font-size: 10px; border-radius: 6px; }
+  .bk-pay-btn   { font-size: 13px; padding: 13px 0; }
+  .bk-trust     { gap: 10px; }
+  .bk-trust-item{ font-size: 9px; }
+}
+
+/* ── DESKTOP: restore grid, reset wrappers ── */
+@media (min-width: 861px) {
+  .bk-wrap {
+    display: grid !important;
+    grid-template-columns: 1fr 360px;
+    gap: 28px;
+  }
+  .bk-preview { display: flex; flex-direction: column; gap: 20px; }
+  .bk-img-wrap, .bk-info-wrap, .bk-bottom-preview { display: contents; padding: 0 !important; order: unset; }
+}
+</style>
+
+
+<!-- Server data -->
+<div id="bookingData"
+  data-price="<%= listing.price %>"
+  data-listing-id="<%= listing._id %>"
+  data-booked-ranges="<%- JSON.stringify(bookedRanges) %>"
+  data-logged-in="<%= currUser ? 'true' : 'false' %>"
+  style="display:none;">
+</div>
+
+
+<div class="bk-page">
+  <div class="bk-wrap">
+
+    <!-- ════════ LEFT ════════ -->
+    <div class="bk-preview">
+
+      <!-- GROUP 1: image + info (stays at top) -->
+      <div class="bk-img-wrap">
+        <!-- listing image -->
+        <div class="bk-img">
+          <img src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900' %>"
+            alt="<%= listing.title %>">
+          <div class="bk-img-ov"></div>
+          <% if(listing.category){ %>
+            <span class="bk-img-badge"><%= listing.category %></span>
+          <% } %>
+          <div class="bk-img-price">
+            <div class="bk-img-price-num">₹<%= listing.price.toLocaleString('en-IN') %></div>
+            <div class="bk-img-price-sub">per night</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUP 2: listing info -->
+      <div class="bk-info-wrap">
+        <div class="bk-info">
+          <div class="bk-eyebrow">Your stay</div>
+          <h2 class="bk-title"><%= listing.title %></h2>
+          <div class="bk-loc">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <%= listing.location %>, <%= listing.country %>
+          </div>
+          <div class="bk-feats">
+            <% if(listing.bedrooms){ %>
+              <span class="bk-feat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M3 7h18v13H3z"/><path d="M3 7V4h18v3"/><path d="M9 13h6"/>
+                </svg>
+                <%= listing.bedrooms %> bedroom<%= listing.bedrooms !== 1 ? 's' : '' %>
+              </span>
+            <% } %>
+            <% if(listing.bathrooms){ %>
+              <span class="bk-feat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M4 12h16v4a4 4 0 01-4 4H8a4 4 0 01-4-4v-4z"/><path d="M6 12V6a2 2 0 012-2h1"/>
+                </svg>
+                <%= listing.bathrooms %> bathroom<%= listing.bathrooms !== 1 ? 's' : '' %>
+              </span>
+            <% } %>
+            <% if(listing.maxGuests){ %>
+              <span class="bk-feat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+                Up to <%= listing.maxGuests %> guests
+              </span>
+            <% } %>
+            <span class="bk-feat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              Verified property
+            </span>
+            <span class="bk-feat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+              </svg>
+              Secure payment
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUP 3 (bottom): breakdown + unavailable — pushed below booking card on mobile -->
+      <div class="bk-bottom-preview">
+
+        <!-- unavailable dates -->
+        <% if(bookings && bookings.length > 0){ %>
+          <div class="bk-booked-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <div>
+              <div class="bk-booked-notice-title">Unavailable dates</div>
+              <% bookings.forEach(function(b){ %>
+                <div class="bk-booked-range">
+                  <%= new Date(b.startDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) %>
+                  →
+                  <%= new Date(b.endDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) %>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- price breakdown -->
+        <div class="bk-breakdown">
+          <div class="bk-breakdown-title">Price breakdown</div>
+          <div class="bk-bd-row">
+            <span class="bk-bd-lbl">₹<%= listing.price.toLocaleString('en-IN') %> × <span id="bdNights">—</span> nights</span>
+            <span class="bk-bd-val" id="bdBase">—</span>
+          </div>
+          <div class="bk-bd-row">
+            <span class="bk-bd-lbl">GST (18%)</span>
+            <span class="bk-bd-val" id="bdGst">—</span>
+          </div>
+          <div class="bk-bd-row bk-bd-total">
+            <span class="bk-bd-lbl">Total</span>
+            <span class="bk-bd-val" id="bdTotal">Select dates</span>
+          </div>
+        </div>
+
+      </div>
+      <!-- END GROUP 3 -->
+
+    </div>
+    <!-- END LEFT -->
+
+    <!-- ════════ RIGHT — BOOKING CARD ════════ -->
+    <div class="bk-form-card">
+
+      <div class="bk-form-head">
+        <div class="bk-form-eyebrow">Secure booking</div>
+        <div class="bk-form-title">Reserve your <em>escape</em></div>
+        <div class="bk-form-price">
+          <span class="bk-form-price-n">₹<%= listing.price.toLocaleString('en-IN') %></span>
+          <span class="bk-form-price-u">/ night</span>
+        </div>
+      </div>
+
+      <div class="bk-form-body">
+
+        <!-- error -->
+        <div class="bk-err" id="bkErr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
+          </svg>
+          <span id="bkErrTxt"></span>
+        </div>
+
+        <!-- nights selected badge -->
+        <div class="bk-nights-badge" id="bkNights">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span id="bkNightsTxt">— nights selected</span>
+        </div>
+
+        <!-- date display -->
+        <div class="bk-date-display">
+          <div class="bk-date-display-field">
+            <div class="bk-date-display-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Check-in
+            </div>
+            <div class="bk-date-display-val empty" id="displayStart">Select date</div>
+          </div>
+          <div class="bk-date-display-field">
+            <div class="bk-date-display-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Check-out
+            </div>
+            <div class="bk-date-display-val empty" id="displayEnd">Select date</div>
+          </div>
+        </div>
+
+        <!-- calendar -->
+        <div class="bk-cal-wrap">
+          <div class="bk-cal-header">
+            <button class="bk-cal-nav" id="calPrev" type="button">&#8592;</button>
+            <div class="bk-cal-month" id="calMonthLabel"></div>
+            <button class="bk-cal-nav" id="calNext" type="button">&#8594;</button>
+          </div>
+          <div class="bk-cal-days-hdr">
+            <div class="bk-cal-day-lbl">Su</div>
+            <div class="bk-cal-day-lbl">Mo</div>
+            <div class="bk-cal-day-lbl">Tu</div>
+            <div class="bk-cal-day-lbl">We</div>
+            <div class="bk-cal-day-lbl">Th</div>
+            <div class="bk-cal-day-lbl">Fr</div>
+            <div class="bk-cal-day-lbl">Sa</div>
+          </div>
+          <div class="bk-cal-grid" id="calGrid"></div>
+          <div class="bk-cal-legend">
+            <div class="bk-cal-legend-item"><div class="bk-cal-legend-dot avail"></div>Available</div>
+            <div class="bk-cal-legend-item"><div class="bk-cal-legend-dot booked"></div>Booked</div>
+            <div class="bk-cal-legend-item"><div class="bk-cal-legend-dot sel"></div>Selected</div>
+          </div>
+        </div>
+
+        <input class="bk-date-hidden" type="date" id="startDate">
+        <input class="bk-date-hidden" type="date" id="endDate">
+
+        <!-- pay button -->
+        <button class="bk-pay-btn" id="payBtn" type="button" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
+            <rect x="1" y="4" width="22" height="16" rx="2"/>
+            <line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+          <span id="payBtnTxt">Select dates to continue</span>
+        </button>
+
+        <!-- trust badges -->
+        <div class="bk-trust">
+          <div class="bk-trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Secure & encrypted
+          </div>
+          <div class="bk-trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="9 12 11.5 14.5 15.5 9.5"/>
+            </svg>
+            Instant confirmation
+          </div>
+          <div class="bk-trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            </svg>
+            Free cancellation
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bk-form-footer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <rect x="1" y="4" width="22" height="16" rx="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+        You won't be charged until booking is confirmed
+      </div>
+
+    </div>
+    <!-- END RIGHT -->
+
+  </div>
+</div>
+
+
+<script>
+(function () {
+  'use strict';
+
+  var bookingData  = document.getElementById('bookingData');
+  var PRICE        = Number(bookingData.dataset.price);
+  var LISTING_ID   = bookingData.dataset.listingId;
+  var IS_LOGGED_IN = bookingData.dataset.loggedIn === 'true';
+  var GST_RATE     = 0.18;
+
+  var BOOKED_RANGES = [];
+  try {
+    BOOKED_RANGES = JSON.parse(bookingData.dataset.bookedRanges || '[]');
+  } catch (e) {
+    console.error('Failed to parse booked ranges', e);
+  }
+
+  var startInp     = document.getElementById('startDate');
+  var endInp       = document.getElementById('endDate');
+  var payBtn       = document.getElementById('payBtn');
+  var errBox       = document.getElementById('bkErr');
+  var errTxt       = document.getElementById('bkErrTxt');
+  var nightsBdg    = document.getElementById('bkNights');
+  var nightsTxt    = document.getElementById('bkNightsTxt');
+  var bdNights     = document.getElementById('bdNights');
+  var bdBase       = document.getElementById('bdBase');
+  var bdGst        = document.getElementById('bdGst');
+  var bdTotal      = document.getElementById('bdTotal');
+  var calGrid      = document.getElementById('calGrid');
+  var calLabel     = document.getElementById('calMonthLabel');
+  var calPrev      = document.getElementById('calPrev');
+  var calNext      = document.getElementById('calNext');
+  var displayStart = document.getElementById('displayStart');
+  var displayEnd   = document.getElementById('displayEnd');
+
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  var viewYear  = today.getFullYear();
+  var viewMonth = today.getMonth();
+  var selStart  = null;
+  var selEnd    = null;
+  var picking   = 'start';
+
+  var MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+
+  /* ── helpers ── */
+  function toYMD(d) {
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+
+  function fmtDisplay(d) {
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function isSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear() &&
+           a.getMonth()    === b.getMonth()    &&
+           a.getDate()     === b.getDate();
+  }
+
+  /* parse YYYY-MM-DD as LOCAL date — avoids UTC timezone shift */
+  function parseLocalDate(str) {
+    if (!str) return null;
+    var p = str.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+
+  /* block start..end-1 (checkout day is free) */
+  function isBookedDay(d) {
+    for (var i = 0; i < BOOKED_RANGES.length; i++) {
+      var r = BOOKED_RANGES[i];
+      var s = parseLocalDate(r.start);
+      var e = parseLocalDate(r.end);
+      if (!s || !e) continue;
+      if (d >= s && d < e) return true;
+    }
+    return false;
+  }
+
+  function rangeOverlapsBooked(sd, ed) {
+    for (var i = 0; i < BOOKED_RANGES.length; i++) {
+      var r = BOOKED_RANGES[i];
+      var s = parseLocalDate(r.start);
+      var e = parseLocalDate(r.end);
+      if (!s || !e) continue;
+      if (sd < e && ed > s &&
+          sd.getTime() !== e.getTime() &&
+          ed.getTime() !== s.getTime()) return true;
+    }
+    return false;
+  }
+
+  function showErr(msg) { errTxt.textContent = msg; errBox.classList.add('show'); }
+  function clearErr()   { errBox.classList.remove('show'); }
+
+  /* ── build calendar ── */
+  function buildCalendar() {
+    calLabel.innerHTML = MONTHS[viewMonth] +
+      ' <span>' + viewYear + '</span>';
+    calGrid.innerHTML = '';
+
+    var firstDay    = new Date(viewYear, viewMonth, 1).getDay();
+    var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    for (var i = 0; i < firstDay; i++) {
+      var empty = document.createElement('div');
+      empty.className = 'bk-cal-cell empty';
+      calGrid.appendChild(empty);
+    }
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      (function (day) {
+        var date = new Date(viewYear, viewMonth, day);
+        date.setHours(0, 0, 0, 0);
+
+        var cell = document.createElement('div');
+        cell.className   = 'bk-cal-cell';
+        cell.textContent = day;
+
+        var isPast   = date < today;
+        var isBooked = isBookedDay(date);
+        var isToday  = isSameDay(date, today);
+
+        if (isPast) {
+          cell.classList.add('disabled');
+        } else if (isBooked) {
+          cell.classList.add('booked');
+        } else {
+          var isStart = selStart && isSameDay(date, selStart);
+          var isEnd   = selEnd   && isSameDay(date, selEnd);
+          var inRange = selStart && selEnd && date > selStart && date < selEnd;
+
+          if (isStart)  cell.classList.add('selected-start');
+          if (isEnd)    cell.classList.add('selected-end');
+          if (inRange)  cell.classList.add('in-range');
+          if (isToday && !isStart && !isEnd) cell.classList.add('today');
+
+          cell.addEventListener('click', function () {
+            onCellClick(new Date(viewYear, viewMonth, day));
+          });
+        }
+
+        calGrid.appendChild(cell);
+      })(d);
+    }
+  }
+
+  /* ── cell click ── */
+  function onCellClick(date) {
+    date.setHours(0, 0, 0, 0);
+    clearErr();
+
+    if (picking === 'start') {
+      selStart = date; selEnd = null; picking = 'end';
+      updateDisplays(); buildCalendar();
+      return;
+    }
+
+    if (date <= selStart) {
+      showErr('Checkout must be after check-in.');
+      return;
+    }
+
+    if (rangeOverlapsBooked(selStart, date)) {
+      showErr('Selected range includes booked dates.');
+      selStart = null; selEnd = null; picking = 'start';
+      updateDisplays(); buildCalendar();
+      return;
+    }
+
+    selEnd = date; picking = 'start';
+    updateDisplays(); buildCalendar();
+    onDatesSelected();
+  }
+
+  /* ── update displays ── */
+  function updateDisplays() {
+    if (selStart) {
+      displayStart.textContent = fmtDisplay(selStart);
+      displayStart.classList.remove('empty');
+      startInp.value = toYMD(selStart);
+    } else {
+      displayStart.textContent = 'Select date';
+      displayStart.classList.add('empty');
+      startInp.value = '';
+    }
+    if (selEnd) {
+      displayEnd.textContent = fmtDisplay(selEnd);
+      displayEnd.classList.remove('empty');
+      endInp.value = toYMD(selEnd);
+    } else {
+      displayEnd.textContent = picking === 'end' ? 'Pick checkout →' : 'Select date';
+      displayEnd.classList.add('empty');
+      endInp.value = '';
+    }
+  }
+
+  /* ── dates selected ── */
+  function onDatesSelected() {
+    if (!selStart || !selEnd) {
+      payBtn.disabled = true;
+      nightsBdg.classList.remove('show');
+      updateBreakdown(0); return;
+    }
+    var nights = Math.round((selEnd - selStart) / (1000 * 60 * 60 * 24));
+    nightsTxt.textContent = nights + ' night' + (nights !== 1 ? 's' : '') + ' selected';
+    nightsBdg.classList.add('show');
+    updateBreakdown(nights);
+    payBtn.disabled = false;
+    document.getElementById('payBtnTxt').textContent = 'Continue to payment';
+  }
+
+  /* ── price breakdown ── */
+  function updateBreakdown(nights) {
+    if (!nights) {
+      bdNights.textContent = '—'; bdBase.textContent = '—';
+      bdGst.textContent = '—'; bdTotal.textContent = 'Select dates';
+      return;
+    }
+    var base  = PRICE * nights;
+    var gst   = Math.round(base * GST_RATE);
+    var total = base + gst;
+    bdNights.textContent = nights;
+    bdBase.textContent   = '₹' + base.toLocaleString('en-IN');
+    bdGst.textContent    = '₹' + gst.toLocaleString('en-IN');
+    bdTotal.textContent  = '₹' + total.toLocaleString('en-IN');
+  }
+
+  /* ── calendar nav ── */
+  calPrev.addEventListener('click', function () {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    if (viewYear < today.getFullYear() ||
+       (viewYear === today.getFullYear() && viewMonth < today.getMonth())) {
+      viewMonth = today.getMonth(); viewYear = today.getFullYear();
+    }
+    buildCalendar();
+  });
+
+  calNext.addEventListener('click', function () {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    buildCalendar();
+  });
+
+  /* ── pay button ── */
+  payBtn.addEventListener('click', function () {
+    if (!IS_LOGGED_IN) { window.location.href = '/login'; return; }
+    if (!selStart || !selEnd) { showErr('Please select dates.'); return; }
+
+    payBtn.disabled = true;
+    document.getElementById('payBtnTxt').textContent = 'Redirecting…';
+
+    fetch('/payment/create-session', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        listingId: LISTING_ID,
+        startDate: startInp.value,
+        endDate:   endInp.value
+      })
+    })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        showErr(data.error || 'Payment failed. Please try again.');
+        payBtn.disabled = false;
+        document.getElementById('payBtnTxt').textContent = 'Continue to payment';
+      }
+    })
+    .catch(function () {
+      showErr('Something went wrong. Please try again.');
+      payBtn.disabled = false;
+      document.getElementById('payBtnTxt').textContent = 'Continue to payment';
+    });
+  });
+
+  /* ── init ── */
+  buildCalendar();
+
+})();
+</script>

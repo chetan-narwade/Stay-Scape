@@ -1,0 +1,295 @@
+<%# ============================================================
+    StayScape — Premium Flash Messages
+    Matches navbar/footer dark luxury aesthetic (blue + cyan)
+    ============================================================ %>
+
+<div class="ss-flash-stack" id="ssFlashStack">
+
+  <% if (typeof success !== 'undefined' && success && success.length) { %>
+    <% success.forEach(function(msg){ %>
+      <div class="ss-flash ss-flash--success" role="alert">
+        <div class="ss-flash__glow"></div>
+        <div class="ss-flash__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="9 12 11.5 14.5 15.5 9.5"/>
+          </svg>
+        </div>
+        <span class="ss-flash__msg"><%= msg %></span>
+        <button class="ss-flash__close" aria-label="Dismiss">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+        <div class="ss-flash__bar"></div>
+      </div>
+    <% }) %>
+  <% } %>
+
+  <% if (typeof error !== 'undefined' && error && error.length) { %>
+    <% error.forEach(function(msg){ %>
+      <div class="ss-flash ss-flash--error" role="alert">
+        <div class="ss-flash__glow"></div>
+        <div class="ss-flash__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <circle cx="12" cy="16" r="0.8" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <span class="ss-flash__msg"><%= msg %></span>
+        <button class="ss-flash__close" aria-label="Dismiss">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+        <div class="ss-flash__bar"></div>
+      </div>
+    <% }) %>
+  <% } %>
+
+</div>
+
+
+<style>
+/* ============================================================
+   FLASH KEYFRAMES
+   ============================================================ */
+@keyframes ss-flash-in {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ss-flash-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 100px;
+    margin-bottom: 10px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@keyframes ss-bar-shrink {
+  from { width: 100%; }
+  to   { width: 0%;   }
+}
+
+@keyframes ss-icon-pop {
+  0%   { transform: scale(0.4) rotate(-20deg); opacity: 0; }
+  65%  { transform: scale(1.18) rotate(5deg);  opacity: 1; }
+  100% { transform: scale(1)    rotate(0deg);  opacity: 1; }
+}
+
+/* ============================================================
+   FLASH STACK — fixed top-center below navbar
+   ============================================================ */
+.ss-flash-stack {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 520px;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+/* ============================================================
+   FLASH TOAST
+   ============================================================ */
+.ss-flash {
+  /* success defaults */
+  --fa:     #10B981;
+  --fa-dim: rgba(16,185,129,0.12);
+  --fa-bd:  rgba(16,185,129,0.28);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 14px 16px;
+  background: #0F1117;
+  border: 1px solid var(--fa-bd);
+  border-left: 3px solid var(--fa);
+  border-radius: 14px;
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(255,255,255,0.03) inset;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+  pointer-events: all;
+  animation: ss-flash-in 0.35s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* error variant */
+.ss-flash--error {
+  --fa:     #EF4444;
+  --fa-dim: rgba(239,68,68,0.1);
+  --fa-bd:  rgba(239,68,68,0.25);
+}
+
+/* ── LEFT GLOW ── */
+.ss-flash__glow {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 80px;
+  background: linear-gradient(90deg, var(--fa-dim), transparent);
+  pointer-events: none;
+  border-radius: 14px 0 0 14px;
+}
+
+/* ── OUT STATE ── */
+.ss-flash--out {
+  animation: ss-flash-out 0.3s cubic-bezier(.4,0,1,1) forwards;
+  pointer-events: none;
+}
+
+/* ── ICON ── */
+.ss-flash__icon {
+  flex-shrink: 0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--fa-dim);
+  border: 1px solid var(--fa-bd);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fa);
+  position: relative; z-index: 1;
+  animation: ss-icon-pop 0.42s cubic-bezier(.34,1.56,.64,1) 0.08s both;
+}
+.ss-flash__icon svg { width: 16px; height: 16px; }
+
+/* ── MESSAGE ── */
+.ss-flash__msg {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 400;
+  color: #F0F4FF;
+  line-height: 1.5;
+  position: relative; z-index: 1;
+}
+
+/* ── CLOSE BUTTON ── */
+.ss-flash__close {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.07);
+  color: #9CA3B0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  position: relative; z-index: 1;
+  transition: background 0.18s, color 0.18s, border-color 0.18s,
+              transform 0.22s cubic-bezier(.34,1.56,.64,1);
+}
+.ss-flash__close svg { width: 12px; height: 12px; }
+.ss-flash__close:hover {
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.35);
+  color: #EF4444;
+  transform: rotate(90deg) scale(1.12);
+}
+/* success close keeps green tint */
+.ss-flash--success .ss-flash__close:hover {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(16,185,129,0.3);
+  color: #10B981;
+}
+
+/* ── PROGRESS BAR ── */
+.ss-flash__bar {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--fa);
+  opacity: 0.4;
+  border-radius: 0 0 14px 0;
+  animation: ss-bar-shrink 5s linear 0.4s forwards;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .ss-flash-stack {
+    top: 70px;
+    padding: 0 12px;
+    max-width: 100%;
+  }
+  .ss-flash { padding: 12px 12px 12px 14px; border-radius: 12px; }
+  .ss-flash__msg  { font-size: 13px; }
+  .ss-flash__icon { width: 30px; height: 30px; }
+  .ss-flash__icon svg { width: 14px; height: 14px; }
+}
+
+@media (max-width: 380px) {
+  .ss-flash-stack { top: 66px; }
+  .ss-flash__msg  { font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-flash, .ss-flash__icon { animation: none !important; }
+  .ss-flash__bar { animation: none !important; width: 0; }
+}
+</style>
+
+
+<script>
+(function () {
+  'use strict';
+
+  var DISMISS_DELAY = 5400; /* matches bar (5s) + delay (0.4s) */
+
+  function dismissFlash(el) {
+    if (el.classList.contains('ss-flash--out')) return;
+    el.classList.add('ss-flash--out');
+    /* remove from DOM after animation completes */
+    setTimeout(function () {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, 350);
+  }
+
+  document.querySelectorAll('.ss-flash').forEach(function (el) {
+    /* auto-dismiss */
+    var timer = setTimeout(function () { dismissFlash(el); }, DISMISS_DELAY);
+
+    /* close button */
+    var btn = el.querySelector('.ss-flash__close');
+    if (btn) {
+      btn.addEventListener('click', function () {
+        clearTimeout(timer);
+        dismissFlash(el);
+      });
+    }
+
+    /* tap on toast itself to dismiss on mobile */
+    el.addEventListener('click', function (e) {
+      if (e.target.closest('.ss-flash__close')) return;
+    });
+  });
+
+})();
+</script>

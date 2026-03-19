@@ -1,0 +1,570 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   LOGIN — StayScape blue/cyan dark system
+   Tokens from boilerplate:
+     --blue #3B82F6  --cyan #06B6D4  --bg #0A0A0F
+     --s1 #111118    --s2 #16161F    --s3 #1E1E28
+     --text #F0F4FF  --muted #6B7280 --border rgba(255,255,255,.07)
+     --glow-blue rgba(59,130,246,.08)
+     --font-heading  --font-body 'Inter'
+     --danger #F87171  --success #4ADE80
+═══════════════════════════════════════════════════════════ */
+
+/* ── KEYFRAMES ── */
+@keyframes lp-fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0);    }
+}
+@keyframes lp-floatOrb {
+  0%,100% { transform:translateY(0);   }
+  50%     { transform:translateY(-16px); }
+}
+@keyframes lp-spin {
+  to { transform:rotate(360deg); }
+}
+@keyframes lp-slideIn {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0);   }
+}
+@keyframes lp-beam {
+  0%  { opacity:0; transform:translateX(-100%); }
+  20% { opacity:1; }
+  80% { opacity:1; }
+  100%{ opacity:0; transform:translateX(100%);  }
+}
+@keyframes lp-shimmer {
+  0%   { background-position:200% center; }
+  100% { background-position:-200% center; }
+}
+
+/* ── PAGE ── */
+.lp-page {
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px 20px;
+  position:relative; overflow:hidden;
+  background:var(--bg);
+}
+
+/* decorative glows — mirrors index hero */
+.lp-orb {
+  position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+}
+.lp-orb-1 {
+  top:-140px; left:-100px; width:480px; height:480px;
+  background:radial-gradient(circle,rgba(59,130,246,.07) 0%,transparent 60%);
+  animation:lp-floatOrb 8s ease-in-out infinite;
+}
+.lp-orb-2 {
+  bottom:-80px; right:-60px; width:360px; height:360px;
+  background:radial-gradient(circle,rgba(6,182,212,.04) 0%,transparent 60%);
+  animation:lp-floatOrb 11s ease-in-out 2s infinite;
+}
+
+/* dot-grid — matches hero */
+.lp-grid {
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(59,130,246,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.025) 1px,transparent 1px);
+  background-size:80px 80px;
+}
+
+/* ── CARD ── */
+.lp-card {
+  position:relative; z-index:1;
+  width:100%; max-width:420px;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:28px; overflow:hidden;
+  animation:lp-fadeUp .6s cubic-bezier(.22,1,.36,1) both;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,.55),
+    0 0 0 1px rgba(59,130,246,.05);
+}
+
+/* top beam — mirrors .sl-hero-beam */
+.lp-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:1px; z-index:2;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 45%,var(--cyan) 55%,transparent 100%);
+  animation:lp-beam 5s ease-in-out 1s both;
+}
+
+/* ── CARD HEADER ── */
+.lp-head {
+  padding:40px 36px 32px; text-align:center;
+  background:var(--s1);
+  border-bottom:1px solid var(--border);
+  position:relative; overflow:hidden;
+}
+
+/* subtle corner glow inside header */
+.lp-head::after {
+  content:'';
+  position:absolute; top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+
+/* logo — matches navbar .ss-nav__brand */
+.lp-logo {
+  display:inline-flex; align-items:center; gap:10px; margin-bottom:24px;
+}
+.lp-logo-icon {
+  width:42px; height:42px; border-radius:50%;
+  background:rgba(59,130,246,.1);
+  border:1px solid rgba(59,130,246,.25);
+  display:flex; align-items:center; justify-content:center;
+}
+.lp-logo-icon svg { width:22px; height:22px; display:block; }
+.lp-logo-text {
+  font-family:var(--font-body);
+  font-size:21px; font-weight:700; color:var(--text); letter-spacing:.01em;
+}
+.lp-logo-text em { font-style:normal; color:var(--blue); }
+
+/* title — shimmer italic like hero */
+.lp-title {
+  font-family:var(--font-heading);
+  font-size:clamp(26px,5vw,34px);
+  font-weight:300; color:var(--text);
+  line-height:1.1; margin-bottom:8px;
+  letter-spacing:-.02em;
+}
+.lp-title em {
+  font-style:italic; font-weight:300;
+  background:linear-gradient(105deg,var(--blue) 25%,var(--cyan) 50%,var(--blue) 75%);
+  background-size:200% auto;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:lp-shimmer 4s linear infinite;
+}
+.lp-sub {
+  font-size:13px; color:var(--muted);
+  font-weight:400; font-family:var(--font-body);
+}
+
+/* ── CARD BODY ── */
+.lp-body { padding:32px 36px 36px; }
+
+/* ── ALERTS ── */
+.lp-alert {
+  display:none; align-items:center; gap:8px;
+  padding:11px 14px; border-radius:10px;
+  font-size:12px; margin-bottom:16px;
+  font-family:var(--font-body);
+  animation:lp-slideIn .25s ease both;
+}
+.lp-alert.show { display:flex; }
+.lp-alert.err {
+  background:rgba(248,113,113,.08);
+  border:1px solid rgba(248,113,113,.25);
+  color:var(--danger);
+}
+.lp-alert.ok {
+  background:rgba(74,222,128,.07);
+  border:1px solid rgba(74,222,128,.2);
+  color:var(--success);
+}
+.lp-alert svg { width:13px; height:13px; flex-shrink:0; }
+
+/* hint box */
+.lp-hint-box {
+  display:none;
+  padding:12px 14px; border-radius:10px; margin-bottom:16px;
+  background:rgba(59,130,246,.06);
+  border:1px solid rgba(59,130,246,.2);
+  font-size:12px; color:var(--muted); line-height:1.6;
+  font-family:var(--font-body);
+  animation:lp-slideIn .25s ease both;
+}
+.lp-hint-box.show { display:block; }
+.lp-hint-box a {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:10px; padding:10px;
+  background:var(--s3);
+  border:1px solid rgba(59,130,246,.2); border-radius:10px;
+  font-size:13px; color:var(--text); text-decoration:none;
+  transition:background .2s, border-color .2s;
+}
+.lp-hint-box a:hover {
+  background:rgba(59,130,246,.08);
+  border-color:rgba(59,130,246,.4);
+}
+
+/* ── FORM FIELDS ── */
+.lp-field { margin-bottom:14px; }
+
+/* input wrapper — mirrors navbar search bar style */
+.lp-input-wrap {
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex; align-items:center; overflow:hidden;
+  transition:border-color .22s, box-shadow .22s, background .22s;
+}
+.lp-input-wrap:hover {
+  border-color:rgba(59,130,246,.3);
+  background:rgba(255,255,255,.05);
+}
+.lp-input-wrap:focus-within {
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(59,130,246,.12);
+  background:rgba(255,255,255,.05);
+}
+.lp-input-wrap:focus-within .lp-icon { color:var(--blue); }
+
+.lp-icon {
+  width:48px; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); flex-shrink:0; transition:color .2s;
+}
+.lp-icon svg { width:15px; height:15px; }
+
+.lp-input {
+  flex:1; background:transparent; border:none; outline:none;
+  padding:15px 14px 15px 0;
+  font-size:14px; color:var(--text); font-family:var(--font-body);
+}
+.lp-input::placeholder { color:var(--muted); }
+
+.lp-eye {
+  width:46px; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); cursor:pointer; flex-shrink:0; transition:color .2s;
+}
+.lp-eye svg { width:16px; height:16px; }
+.lp-eye:hover { color:var(--blue); }
+
+/* forgot password link */
+.lp-forgot { text-align:right; margin-top:8px; }
+.lp-forgot a {
+  font-size:12px; color:var(--muted); text-decoration:none;
+  font-family:var(--font-body);
+  transition:color .2s;
+}
+.lp-forgot a:hover { color:var(--blue); }
+
+/* ── SUBMIT BUTTON — mirrors .sl-btn-primary ── */
+.lp-btn {
+  width:100%; padding:16px 0;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#fff; border:none; border-radius:999px;
+  font-size:14px; font-weight:600; letter-spacing:.04em;
+  font-family:var(--font-body); cursor:pointer;
+  margin-top:24px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  position:relative; overflow:hidden;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+}
+.lp-btn:hover {
+  transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(59,130,246,.4);
+  filter:brightness(1.08);
+}
+.lp-btn:active { transform:scale(.97); box-shadow:none; }
+.lp-btn:disabled {
+  opacity:.55; cursor:not-allowed;
+  transform:none; box-shadow:none; filter:none;
+}
+
+/* ── DIVIDER ── */
+.lp-divider {
+  display:flex; align-items:center; gap:12px;
+  margin:24px 0;
+  font-size:11px; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase;
+  font-family:var(--font-body);
+}
+.lp-divider::before,
+.lp-divider::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+}
+
+/* ── GOOGLE BUTTON — mirrors .sl-btn-outline style ── */
+.lp-google {
+  width:100%; display:flex; align-items:center;
+  justify-content:center; gap:12px;
+  padding:14px 0;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border); border-radius:14px;
+  font-size:14px; color:var(--text); font-weight:500;
+  font-family:var(--font-body); text-decoration:none;
+  transition:border-color .2s, background .2s,
+             transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+.lp-google:hover {
+  color:var(--text);
+  border-color:rgba(59,130,246,.3);
+  background:rgba(59,130,246,.05);
+  transform:translateY(-2px);
+}
+
+/* ── FOOTER LINK ── */
+.lp-footer {
+  text-align:center; margin-top:24px;
+  font-size:13px; color:var(--muted);
+  font-family:var(--font-body);
+}
+.lp-footer a {
+  color:var(--blue); font-weight:600;
+  border-bottom:1px solid rgba(59,130,246,.25);
+  padding-bottom:1px; transition:color .2s, border-color .2s;
+}
+.lp-footer a:hover { color:var(--cyan); border-color:var(--cyan); }
+
+/* ── TRUST BAR — mirrors .sl-trust-ribbon ── */
+.lp-trust {
+  display:flex; align-items:center; justify-content:center; gap:18px;
+  padding:16px 36px 20px;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;
+  background:var(--s1);
+}
+.lp-trust-item {
+  display:flex; align-items:center; gap:5px;
+  font-size:10px; color:var(--muted); letter-spacing:.06em;
+  font-family:var(--font-body);
+}
+.lp-trust-item svg { width:12px; height:12px; color:var(--cyan); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:480px) {
+  .lp-page { padding:0; }
+  .lp-card {
+    border-radius:0; min-height:100vh;
+    border:none; max-width:100%;
+    box-shadow:none; animation:none;
+  }
+  .lp-head  { padding:32px 22px 26px; }
+  .lp-body  { padding:26px 22px 30px; }
+  .lp-trust { padding:14px 22px 20px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .lp-orb-1, .lp-orb-2 { animation:none; }
+  .lp-card::before      { animation:none; }
+  .lp-title em          { animation:none; }
+  .lp-card              { animation:none; }
+}
+</style>
+
+
+<div class="lp-page">
+  <div class="lp-orb lp-orb-1" aria-hidden="true"></div>
+  <div class="lp-orb lp-orb-2" aria-hidden="true"></div>
+  <div class="lp-grid"         aria-hidden="true"></div>
+
+  <div class="lp-card">
+
+    <!-- ══ HEADER ════════════════════════════════════════ -->
+    <div class="lp-head">
+      <div class="lp-logo">
+        <div class="lp-logo-icon">
+          <!-- matches navbar brand SVG exactly -->
+          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2L25 8.5V19.5L14 26L3 19.5V8.5L14 2Z" fill="#3B82F6" opacity="0.18"/>
+            <path d="M14 2L25 8.5V19.5L14 26L3 19.5V8.5L14 2Z" stroke="#3B82F6" stroke-width="1.2"/>
+            <path d="M9 16.5C9 13.46 11.24 11 14 11C16.76 11 19 13.46 19 16.5"
+                  stroke="#06B6D4" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="14" cy="10" r="1.8" fill="#3B82F6"/>
+          </svg>
+        </div>
+        <span class="lp-logo-text">Stay<em>Scape</em></span>
+      </div>
+      <h1 class="lp-title">Welcome <em>back</em></h1>
+      <p class="lp-sub">Sign in to continue your journey</p>
+    </div>
+
+    <!-- ══ BODY ═══════════════════════════════════════════ -->
+    <div class="lp-body">
+
+      <!-- flash: error -->
+      <% if (error && error.length > 0) { %>
+        <div class="lp-alert err show">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
+          </svg>
+          <span><%= error[0] %></span>
+        </div>
+
+        <!-- smart hint: Google-created account -->
+        <% if (error[0] && error[0].toLowerCase().includes('google')) { %>
+          <div class="lp-hint-box show">
+            This account was created with Google. Use the button below to sign in:
+            <a href="/auth/google">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              Sign in with Google
+            </a>
+          </div>
+        <% } %>
+      <% } %>
+
+      <!-- flash: success -->
+      <% if (success && success.length > 0) { %>
+        <div class="lp-alert ok show">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="9 12 11.5 14.5 15.5 9.5"/>
+          </svg>
+          <span><%= success[0] %></span>
+        </div>
+      <% } %>
+
+      <!-- login form -->
+      <form action="/login" method="POST" id="loginForm">
+
+        <!-- email -->
+        <div class="lp-field">
+          <div class="lp-input-wrap">
+            <span class="lp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </span>
+            <input class="lp-input" type="email" name="email"
+                   placeholder="Email address"
+                   autocomplete="email" required>
+          </div>
+        </div>
+
+        <!-- password -->
+        <div class="lp-field">
+          <div class="lp-input-wrap">
+            <span class="lp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+            </span>
+            <input class="lp-input" type="password" id="lp-password"
+                   name="password" placeholder="Password"
+                   autocomplete="current-password" required>
+            <span class="lp-eye" id="eyeToggle" role="button"
+                  aria-label="Toggle password visibility">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </span>
+          </div>
+          <div class="lp-forgot">
+            <a href="/forgot-password">Forgot password?</a>
+          </div>
+        </div>
+
+        <button type="submit" class="lp-btn" id="loginBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" width="15" height="15">
+            <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Sign in
+        </button>
+
+      </form>
+
+      <div class="lp-divider">or</div>
+
+      <!-- Google OAuth -->
+      <a href="/auth/google" class="lp-google">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continue with Google
+      </a>
+
+      <p class="lp-footer">
+        Don't have an account? <a href="/signup">Create one</a>
+      </p>
+
+    </div><!-- /.lp-body -->
+
+    <!-- ══ TRUST BAR ═══════════════════════════════════════ -->
+    <div class="lp-trust">
+      <div class="lp-trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        SSL secured
+      </div>
+      <div class="lp-trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round">
+          <rect x="1" y="4" width="22" height="16" rx="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+        Safe payments
+      </div>
+      <div class="lp-trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="9 12 11.5 14.5 15.5 9.5"/>
+        </svg>
+        Trusted platform
+      </div>
+    </div>
+
+  </div><!-- /.lp-card -->
+</div><!-- /.lp-page -->
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Password toggle ── */
+  var eye     = document.getElementById('eyeToggle');
+  var pwd     = document.getElementById('lp-password');
+  var eyeIcon = document.getElementById('eyeIcon');
+  var eyeOpen = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  var eyeOff  = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+
+  if (eye && pwd) {
+    eye.addEventListener('click', function () {
+      var showing = pwd.type === 'text';
+      pwd.type = showing ? 'password' : 'text';
+      eyeIcon.innerHTML = showing ? eyeOpen : eyeOff;
+    });
+  }
+
+  /* ── Submit loading state ── */
+  var form     = document.getElementById('loginForm');
+  var loginBtn = document.getElementById('loginBtn');
+
+  if (form && loginBtn) {
+    form.addEventListener('submit', function () {
+      if (!form.checkValidity()) return;
+      loginBtn.disabled = true;
+      loginBtn.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"' +
+        ' stroke-linecap="round" width="15" height="15"' +
+        ' style="animation:lp-spin .8s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg>' +
+        'Signing in\u2026';
+    });
+  }
+
+})();
+</script>

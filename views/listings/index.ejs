@@ -1,0 +1,1139 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   INDEX PAGE — StayScape blue/cyan palette
+   Mobile-first, no gold/serif overrides
+═══════════════════════════════════════════════════════════ */
+
+/* ── KEYFRAMES ── */
+@keyframes fadeUp   { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scaleIn  { from{opacity:0;transform:scale(.94)}       to{opacity:1;transform:scale(1)}      }
+@keyframes marquee  { from{transform:translateX(0)}              to{transform:translateX(-50%)}         }
+@keyframes float    { 0%,100%{transform:translateY(0)}           50%{transform:translateY(-8px)}        }
+@keyframes shimmer  { 0%{background-position:200% center}        100%{background-position:-200% center} }
+@keyframes beamSlide{
+  0%  {opacity:0;transform:translateX(-100%)}
+  20% {opacity:1}
+  80% {opacity:1}
+  100%{opacity:0;transform:translateX(100%)}
+}
+@keyframes pulse-ring {
+  0%  { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(59,130,246,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(59,130,246,0);   }
+}
+
+/* ══ HERO ══════════════════════════════════════════════════ */
+.sl-hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
+  /* remove boilerplate's padding-top since hero handles its own spacing */
+  margin-top: -64px;
+  padding-top: 64px;
+}
+
+/* noise texture overlay */
+.sl-hero-noise {
+  position: absolute; inset: 0;
+  opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  pointer-events: none;
+}
+/* blue radial glows */
+.sl-hero-glow1 {
+  position: absolute; top: -200px; left: -150px;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+.sl-hero-glow2 {
+  position: absolute; bottom: -100px; right: 0;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,182,212,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+/* subtle grid */
+.sl-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+/* diagonal lines */
+.sl-hero-lines {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.sl-hero-lines::before {
+  content: '';
+  position: absolute; top: 0; left: 30%;
+  width: .5px; height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(59,130,246,.06) 30%, rgba(59,130,246,.06) 70%, transparent);
+  transform: rotate(-8deg) translateY(-10%);
+}
+.sl-hero-lines::after {
+  content: '';
+  position: absolute; top: 0; right: 25%;
+  width: .5px; height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(6,182,212,.04) 40%, rgba(6,182,212,.04) 60%, transparent);
+  transform: rotate(6deg) translateY(-10%);
+}
+/* animated beam */
+.sl-hero-beam {
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--blue) 45%, var(--cyan) 55%, transparent 100%);
+  animation: beamSlide 6s ease-in-out 1s both;
+}
+
+.sl-hero-inner {
+  position: relative; z-index: 1;
+  max-width: 1080px; margin: 0 auto;
+  padding: 0 32px;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+
+/* label above h1 */
+.sl-hero-label {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-size: 10px; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 32px;
+  animation: fadeUp .6s .1s both; font-weight: 500;
+  font-family: var(--font-body);
+}
+.sl-hero-label-line {
+  width: 48px; height: .5px;
+  background: linear-gradient(90deg, transparent, var(--blue));
+  opacity: .6;
+}
+.sl-hero-label-line.r { background: linear-gradient(90deg, var(--blue), transparent); }
+
+/* main heading */
+.sl-h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(48px, 8.5vw, 100px);
+  font-weight: 300;
+  line-height: 1.0;
+  color: var(--text);
+  letter-spacing: -.02em;
+  margin: 0 0 10px;
+  animation: fadeUp .7s .2s both;
+}
+.sl-h1-italic {
+  display: block;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.05;
+}
+/* shimmer on italic line */
+.sl-shimmer {
+  background: linear-gradient(105deg, var(--blue) 25%, var(--cyan) 50%, var(--blue) 75%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+.sl-sub {
+  font-size: 17px; color: var(--muted);
+  max-width: 480px; line-height: 1.8;
+  font-weight: 400; margin: 0 0 52px;
+  animation: fadeUp .7s .35s both;
+  font-family: var(--font-body);
+}
+
+/* CTA buttons */
+.sl-ctas {
+  display: flex; gap: 14px;
+  margin-bottom: 64px;
+  flex-wrap: wrap; justify-content: center;
+  animation: fadeUp .7s .45s both;
+}
+.sl-btn-primary {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 15px 32px;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  color: #fff; border: none; border-radius: 999px;
+  font-size: 13px; font-weight: 600; letter-spacing: .04em;
+  font-family: var(--font-body);
+  position: relative; overflow: hidden;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+}
+.sl-btn-primary:hover {
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(59,130,246,.4);
+  filter: brightness(1.08);
+}
+.sl-btn-primary:active { transform: scale(.97); }
+.sl-btn-outline {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 14px 28px;
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border); border-radius: 999px;
+  font-size: 13px; font-weight: 500; letter-spacing: .04em;
+  font-family: var(--font-body);
+  transition: border-color .2s, color .2s, transform .22s cubic-bezier(.34,1.56,.64,1), background .2s;
+}
+.sl-btn-outline:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-3px);
+  background: var(--glow-blue);
+}
+
+/* hero stats bar */
+.sl-hero-stats {
+  display: flex; align-items: stretch;
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  background: rgba(17,17,24,.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: fadeUp .7s .55s both;
+}
+.sl-hstat {
+  padding: 22px 30px;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  border-right: 1px solid var(--border);
+  transition: background .25s;
+}
+.sl-hstat:last-child { border-right: none; }
+.sl-hstat:hover { background: rgba(59,130,246,.06); }
+.sl-hstat-num {
+  font-family: var(--font-heading);
+  font-size: 27px; font-weight: 300;
+  color: var(--text); line-height: 1;
+}
+.sl-hstat-lbl {
+  font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted);
+  font-family: var(--font-body);
+}
+
+/* ══ TRUST RIBBON ═══════════════════════════════════════════ */
+.sl-trust-ribbon {
+  background: var(--s1);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+}
+.sl-trust-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: flex; align-items: center;
+  justify-content: center; gap: 24px; flex-wrap: wrap;
+}
+.sl-trust-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; letter-spacing: .06em;
+  color: var(--muted); font-family: var(--font-body);
+}
+.sl-trust-item svg { color: var(--cyan); width: 14px; height: 14px; flex-shrink: 0; }
+.sl-trust-sep { width: .5px; height: 14px; background: var(--border); }
+
+/* ══ MARQUEE ════════════════════════════════════════════════ */
+.sl-mq-wrap {
+  overflow: hidden; position: relative;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.sl-mq-wrap::before, .sl-mq-wrap::after {
+  content: ''; position: absolute; top: 0; bottom: 0;
+  width: 100px; z-index: 2; pointer-events: none;
+}
+.sl-mq-wrap::before { left: 0;  background: linear-gradient(90deg,  var(--bg), transparent); }
+.sl-mq-wrap::after  { right: 0; background: linear-gradient(-90deg, var(--bg), transparent); }
+.sl-mq-track {
+  display: flex; gap: 10px;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+}
+.sl-mq-track:hover { animation-play-state: paused; }
+.sl-mq-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid var(--border); border-radius: 999px;
+  font-size: 11px; color: var(--muted);
+  white-space: nowrap;
+  font-family: var(--font-body); letter-spacing: .04em;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.sl-mq-pill:hover { border-color: var(--blue); color: var(--blue); background: var(--glow-blue); }
+.sl-mq-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--cyan); opacity: .5; flex-shrink: 0; }
+
+/* ══ CATEGORY STRIP ═════════════════════════════════════════ */
+.sl-cats-wrap {
+  background: rgba(10,10,15,.95);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 64px; z-index: 200;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.sl-cats {
+  max-width: 1080px; margin: 0 auto;
+  padding: 0 32px;
+  display: flex; align-items: center; gap: 4px;
+  overflow-x: auto; scrollbar-width: none;
+  height: 60px;
+}
+.sl-cats::-webkit-scrollbar { display: none; }
+.sl-cat {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px;
+  color: var(--muted); font-size: 13px; letter-spacing: .03em; font-weight: 400;
+  border-radius: 999px; border: 1px solid transparent;
+  flex-shrink: 0; white-space: nowrap;
+  font-family: var(--font-body);
+  transition: color .2s, background .2s, border-color .2s, transform .18s cubic-bezier(.34,1.56,.64,1);
+}
+.sl-cat svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform .22s cubic-bezier(.34,1.56,.64,1); }
+.sl-cat:hover {
+  color: var(--text);
+  background: rgba(255,255,255,.05);
+  border-color: var(--border);
+}
+.sl-cat:hover svg { transform: scale(1.18); }
+.sl-cat:active { transform: scale(.96); }
+.sl-cat.active {
+  color: var(--blue);
+  background: rgba(59,130,246,.1);
+  border-color: rgba(59,130,246,.35);
+  font-weight: 600;
+}
+
+/* ══ SECTION WRAPPER ════════════════════════════════════════ */
+.sl-section {
+  max-width: 1080px; margin: 0 auto;
+  padding: 60px 32px;
+}
+.sl-sec-hd {
+  display: flex; align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px; gap: 16px; flex-wrap: wrap;
+}
+.sl-sec-tag {
+  font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-body);
+}
+.sl-sec-tag::before {
+  content: ''; display: block;
+  width: 24px; height: 1px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+.sl-sec-title {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 300; color: var(--text); line-height: 1.08;
+}
+.sl-sec-title em { font-style: italic; color: var(--cyan); }
+.sl-sec-link {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--font-body);
+  border-bottom: 1px solid rgba(59,130,246,.2);
+  padding-bottom: 2px; white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.sl-sec-link:hover { color: var(--blue); border-color: var(--blue); }
+.sl-sep {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  max-width: 1080px; margin: 0 auto;
+}
+
+/* ══ GRID META BAR ══════════════════════════════════════════ */
+.sl-grid-meta {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px; flex-wrap: wrap; gap: 12px;
+}
+.sl-count {
+  font-size: 13px; color: var(--muted); font-family: var(--font-body);
+}
+.sl-count strong { color: var(--text); font-weight: 600; }
+.sl-tax-toggle { display: flex; align-items: center; gap: 10px; }
+.sl-tog {
+  position: relative; display: block;
+  width: 44px; height: 24px; cursor: pointer; flex-shrink: 0;
+}
+.sl-tog input { opacity: 0; position: absolute; width: 0; height: 0; }
+.sl-tog-slider {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--border); border-radius: 999px;
+  transition: all .28s;
+}
+.sl-tog-slider::after {
+  content: '';
+  position: absolute; left: 4px; top: 4px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--muted);
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1), background .28s;
+}
+.sl-tog input:checked ~ .sl-tog-slider {
+  background: rgba(59,130,246,.15);
+  border-color: var(--blue);
+}
+.sl-tog input:checked ~ .sl-tog-slider::after {
+  transform: translateX(20px);
+  background: var(--blue);
+}
+.sl-tog-lbl {
+  font-size: 12px; color: var(--muted);
+  user-select: none; cursor: pointer; letter-spacing: .03em;
+  font-family: var(--font-body);
+}
+
+/* ══ LISTING CARDS ══════════════════════════════════════════ */
+.sl-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.sl-card {
+  background: var(--s2);
+  border: 1px solid rgba(255,255,255,.04);
+  border-radius: 18px; overflow: hidden;
+  display: flex; flex-direction: column;
+  animation: scaleIn .5s cubic-bezier(.22,1,.36,1) both;
+  transition: border-color .3s, transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s;
+  color: var(--text);
+}
+.sl-card:hover {
+  border-color: rgba(59,130,246,.3);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(59,130,246,.1);
+  color: var(--text);
+}
+.sl-card.feat { grid-column: span 2; }
+
+/* card image */
+.sl-card-img {
+  height: 220px; position: relative;
+  overflow: hidden; background: var(--s3);
+}
+.sl-card.feat .sl-card-img { height: 300px; }
+.sl-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .6s cubic-bezier(.25,.46,.45,.94), filter .4s;
+}
+.sl-card:hover .sl-card-img img { transform: scale(1.07); filter: brightness(1.04); }
+.sl-card-img-ov {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,15,.55) 0%, rgba(10,10,15,.1) 40%, transparent 65%);
+}
+
+/* badge top-left */
+.sl-card-top {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 13px; display: flex;
+  align-items: flex-start; justify-content: flex-start; z-index: 2;
+}
+.sl-badge {
+  padding: 4px 11px;
+  background: rgba(10,10,15,.75);
+  border: 1px solid rgba(59,130,246,.25); border-radius: 999px;
+  font-size: 10px; letter-spacing: .08em;
+  color: var(--blue); font-weight: 500;
+  backdrop-filter: blur(8px); font-family: var(--font-body);
+}
+.sl-badge-new {
+  padding: 4px 11px;
+  background: rgba(16,185,129,.12);
+  border: 1px solid rgba(16,185,129,.3); border-radius: 999px;
+  font-size: 10px; color: #4ade80;
+  backdrop-filter: blur(8px); font-family: var(--font-body);
+}
+.sl-badge-hot {
+  padding: 4px 11px;
+  background: rgba(239,68,68,.12);
+  border: 1px solid rgba(239,68,68,.28); border-radius: 999px;
+  font-size: 10px; color: #f87171;
+  backdrop-filter: blur(8px); font-family: var(--font-body);
+}
+
+/* rating row over image */
+.sl-card-img-meta {
+  position: absolute; bottom: 13px; left: 13px;
+  z-index: 2; display: flex; align-items: center; gap: 6px;
+}
+.sl-stars { display: flex; gap: 2px; }
+.sl-stars svg { width: 11px; height: 11px; }
+.sl-reviews { font-size: 11px; color: rgba(240,244,255,.75); font-family: var(--font-body); }
+
+/* card body */
+.sl-card-body {
+  padding: 18px 20px 20px;
+  flex: 1; display: flex; flex-direction: column;
+}
+.sl-card-loc {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 7px;
+  font-family: var(--font-body);
+}
+.sl-card-loc svg { width: 10px; height: 10px; flex-shrink: 0; color: var(--cyan); }
+.sl-card-title {
+  font-family: var(--font-heading);
+  font-size: 18px; font-weight: 400;
+  color: var(--text); line-height: 1.25; margin-bottom: 12px;
+}
+.sl-card.feat .sl-card-title { font-size: 23px; }
+
+/* tags */
+.sl-card-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px; }
+.sl-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 9px;
+  background: rgba(59,130,246,.06);
+  border: 1px solid rgba(59,130,246,.12); border-radius: 7px;
+  font-size: 10px; color: var(--muted); letter-spacing: .04em;
+  font-family: var(--font-body);
+  transition: border-color .2s, color .2s;
+}
+.sl-tag:hover { border-color: rgba(59,130,246,.3); color: var(--blue); }
+
+/* footer: price + book btn */
+.sl-card-footer {
+  display: flex; align-items: flex-end;
+  justify-content: space-between;
+  margin-top: auto; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+.sl-price { display: flex; align-items: baseline; gap: 2px; }
+.sl-pcur  { font-size: 14px; color: var(--blue); font-weight: 500; }
+.sl-pval  { font-family: var(--font-heading); font-size: 24px; font-weight: 300; color: var(--text); }
+.sl-punit { font-size: 11px; color: var(--muted); margin-left: 2px; font-family: var(--font-body); }
+.sl-ptax  { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: .03em; font-family: var(--font-body); }
+.sl-book-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px;
+  background: rgba(59,130,246,.1);
+  border: 1px solid rgba(59,130,246,.25); border-radius: 999px;
+  font-size: 11px; letter-spacing: .05em;
+  color: var(--blue); font-weight: 500; white-space: nowrap;
+  font-family: var(--font-body);
+  transition: background .2s, border-color .2s, color .2s, transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.sl-book-btn:hover {
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  border-color: transparent;
+  color: #fff;
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(59,130,246,.3);
+}
+
+/* ══ WHY SECTION ════════════════════════════════════════════ */
+.sl-why-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+}
+.sl-why-card {
+  background: var(--s1);
+  padding: 36px 30px;
+  display: flex; flex-direction: column; gap: 16px;
+  transition: background .25s;
+}
+.sl-why-card:hover { background: var(--s2); }
+.sl-why-icon {
+  width: 50px; height: 50px; border-radius: 14px;
+  background: rgba(59,130,246,.08);
+  border: 1px solid rgba(59,130,246,.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue);
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.sl-why-card:hover .sl-why-icon {
+  transform: scale(1.08) rotate(-4deg);
+  box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+}
+.sl-why-icon svg { width: 22px; height: 22px; }
+.sl-why-title {
+  font-family: var(--font-heading);
+  font-size: 22px; font-weight: 400; color: var(--text);
+}
+.sl-why-desc {
+  font-size: 13px; color: var(--muted); line-height: 1.8;
+  font-weight: 400; font-family: var(--font-body);
+}
+.sl-why-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--blue); margin-top: 4px; opacity: .65;
+  font-family: var(--font-body);
+  transition: opacity .2s;
+}
+.sl-why-card:hover .sl-why-link { opacity: 1; }
+
+/* ══ EMPTY STATE ════════════════════════════════════════════ */
+.sl-empty {
+  display: flex; flex-direction: column;
+  align-items: center; padding: 80px 20px; text-align: center;
+}
+.sl-empty-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(59,130,246,.08);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue); margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+.sl-empty-icon svg { width: 26px; height: 26px; }
+.sl-empty-title {
+  font-family: var(--font-heading);
+  font-size: 28px; font-weight: 300; color: var(--text); margin: 0 0 12px;
+}
+.sl-empty-text {
+  font-size: 14px; color: var(--muted);
+  margin: 0 0 24px; max-width: 340px; line-height: 1.7;
+  font-family: var(--font-body);
+}
+.sl-empty-btn {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  color: #fff; border-radius: 999px;
+  font-size: 13px; font-weight: 600; font-family: var(--font-body);
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.sl-empty-btn:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59,130,246,.35);
+}
+
+/* ══ RESPONSIVE — TABLET 1024px ═════════════════════════════ */
+@media (max-width: 1024px) {
+  .sl-grid { grid-template-columns: repeat(3, 1fr); }
+  .sl-card.feat { grid-column: span 2; }
+  .sl-section { padding: 48px 28px; }
+}
+
+/* ══ RESPONSIVE — 900px ═════════════════════════════════════ */
+@media (max-width: 900px) {
+  .sl-cats { padding: 0 20px; justify-content: flex-start; }
+  .sl-hero { min-height: auto; padding: 80px 24px 60px; }
+  .sl-hero-stats { flex-wrap: wrap; border-radius: 16px; }
+  .sl-hstat { flex: 1; min-width: 100px; padding: 18px 16px; }
+  .sl-grid { grid-template-columns: repeat(2, 1fr); }
+  .sl-card.feat { grid-column: span 2; }
+  .sl-card.feat .sl-card-img { height: 240px; }
+  .sl-why-grid { grid-template-columns: 1fr; }
+  .sl-trust-inner { gap: 16px; }
+  .sl-trust-sep { display: none; }
+  .sl-section { padding: 44px 24px; }
+}
+
+/* ══ RESPONSIVE — MOBILE 640px ══════════════════════════════ */
+@media (max-width: 640px) {
+  .sl-hero { padding: 60px 16px 48px; }
+  .sl-hero-inner { padding: 10px; }
+  .sl-hero-label { font-size: 9px; gap: 10px; margin-bottom: 22px; }
+  .sl-hero-label-line { width: 28px; }
+  .sl-h1 { font-size: clamp(36px, 10vw, 54px); margin-bottom: 8px; }
+  .sl-sub { font-size: 14px; margin-bottom: 36px; }
+  .sl-ctas { gap: 10px; margin-bottom: 40px; flex-direction: column; width: 100%; }
+  .sl-btn-primary,
+  .sl-btn-outline { width: 100%; justify-content: center; padding: 14px 20px; font-size: 13px; }
+  .sl-hero-stats { border-radius: 14px; width: 100%; }
+  .sl-hstat { flex: 1; padding: 16px 10px; min-width: 60px; }
+  .sl-hstat-num { font-size: 20px; }
+  .sl-hstat-lbl { display: none; }
+  .sl-trust-ribbon { padding: 12px 16px; overflow-x: auto; }
+  .sl-trust-inner { justify-content: flex-start; flex-wrap: nowrap; gap: 16px; }
+  .sl-trust-item { font-size: 11px; white-space: nowrap; }
+  .sl-mq-wrap { padding: 12px 0; }
+  .sl-cats-wrap { top: 0; position: relative; }
+  .sl-cats { padding: 0 12px; height: 52px; }
+  .sl-cat { padding: 7px 12px; font-size: 11px; gap: 5px; }
+  .sl-cat svg { width: 13px; height: 13px; }
+  .sl-section { padding: 32px 16px; }
+  .sl-sec-title { font-size: 26px; }
+  .sl-sec-hd { margin-bottom: 20px; }
+  .sl-grid-meta { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+  .sl-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sl-card.feat { grid-column: span 2; }
+  .sl-card-img { height: 160px; }
+  .sl-card.feat .sl-card-img { height: 200px; }
+  .sl-card-body { padding: 12px 13px 14px; }
+  .sl-card-loc { font-size: 9px; margin-bottom: 4px; }
+  .sl-card-title { font-size: 14px; margin-bottom: 8px; }
+  .sl-card.feat .sl-card-title { font-size: 17px; }
+  .sl-card-tags { gap: 4px; margin-bottom: 10px; }
+  .sl-tag { font-size: 9px; padding: 3px 7px; }
+  .sl-card-footer { flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 10px; }
+  .sl-pval { font-size: 20px; }
+  .sl-book-btn { width: 100%; justify-content: center; padding: 8px 14px; font-size: 11px; }
+  .sl-card-img-meta { bottom: 8px; left: 10px; }
+  .sl-stars svg { width: 9px; height: 9px; }
+  .sl-reviews { font-size: 10px; }
+  .sl-card-top { padding: 10px; }
+  .sl-badge, .sl-badge-new, .sl-badge-hot { font-size: 9px; padding: 3px 8px; }
+  .sl-why-grid { border-radius: 14px; }
+  .sl-why-card { padding: 24px 20px; gap: 12px; }
+  .sl-why-icon { width: 42px; height: 42px; border-radius: 10px; }
+  .sl-why-icon svg { width: 18px; height: 18px; }
+  .sl-why-title { font-size: 18px; }
+  .sl-why-desc { font-size: 12px; line-height: 1.7; }
+  .sl-empty { padding: 56px 16px; }
+  .sl-empty-title { font-size: 22px; }
+}
+
+/* ══ RESPONSIVE — SMALL MOBILE 380px ═══════════════════════ */
+@media (max-width: 380px) {
+  .sl-grid { grid-template-columns: 1fr; }
+  .sl-card.feat { grid-column: span 1; }
+  .sl-card-img, .sl-card.feat .sl-card-img { height: 200px; }
+  .sl-card-footer { flex-direction: row; align-items: flex-end; }
+  .sl-book-btn { width: auto; }
+  .sl-hstat { padding: 14px 8px; }
+  .sl-hstat-num { font-size: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sl-mq-track { animation: none; }
+  .sl-empty-icon { animation: none; }
+  .sl-hero-beam { animation: none; }
+  .sl-shimmer { animation: none; background: var(--blue); -webkit-text-fill-color: transparent; }
+}
+</style>
+
+
+<!-- ════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<section class="sl-hero">
+  <div class="sl-hero-noise"></div>
+  <div class="sl-hero-glow1"></div>
+  <div class="sl-hero-glow2"></div>
+  <div class="sl-hero-grid"></div>
+  <div class="sl-hero-lines"></div>
+  <div class="sl-hero-beam"></div>
+
+  <div class="sl-hero-inner">
+    <div class="sl-hero-label">
+      <span class="sl-hero-label-line"></span>
+      Handpicked stays worldwide
+      <span class="sl-hero-label-line r"></span>
+    </div>
+
+    <h1 class="sl-h1">
+      Discover your
+      <span class="sl-h1-italic sl-shimmer">perfect escape</span>
+    </h1>
+
+    <p class="sl-sub">
+      From cliff-top villas in Santorini to jungle retreats in Bali — every listing curated for those who travel with intention.
+    </p>
+
+    <div class="sl-ctas">
+      <a href="/listings" class="sl-btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15">
+          <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        Explore stays
+      </a>
+      <a href="/listings/new" class="sl-btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/>
+        </svg>
+        List your property
+      </a>
+    </div>
+
+    <div class="sl-hero-stats">
+      <div class="sl-hstat"><span class="sl-hstat-num">12K+</span><span class="sl-hstat-lbl">Properties</span></div>
+      <div class="sl-hstat"><span class="sl-hstat-num">86</span><span class="sl-hstat-lbl">Countries</span></div>
+      <div class="sl-hstat"><span class="sl-hstat-num">4.9★</span><span class="sl-hstat-lbl">Avg rating</span></div>
+      <div class="sl-hstat"><span class="sl-hstat-num">340K</span><span class="sl-hstat-lbl">Happy guests</span></div>
+      <div class="sl-hstat"><span class="sl-hstat-num">98%</span><span class="sl-hstat-lbl">Satisfaction</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════
+     TRUST RIBBON
+════════════════════════════════════════════════════════ -->
+<div class="sl-trust-ribbon">
+  <div class="sl-trust-inner">
+    <div class="sl-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      Verified listings
+    </div>
+    <div class="sl-trust-sep"></div>
+    <div class="sl-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+      </svg>
+      Secure payments
+    </div>
+    <div class="sl-trust-sep"></div>
+    <div class="sl-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      </svg>
+      Free cancellation
+    </div>
+    <div class="sl-trust-sep"></div>
+    <div class="sl-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+      24/7 support
+    </div>
+    <div class="sl-trust-sep"></div>
+    <div class="sl-trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="9 12 11.5 14.5 15.5 9.5"/>
+      </svg>
+      Instant booking
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     DESTINATION MARQUEE
+════════════════════════════════════════════════════════ -->
+<div class="sl-mq-wrap">
+  <div class="sl-mq-track">
+    <% const sl_dests = [
+      'Bali · Indonesia','Santorini · Greece','Maldives',
+      'Tuscany · Italy','Kyoto · Japan','Goa · India',
+      'Amalfi Coast','Cape Town · SA','Dubrovnik',
+      'New York City','Tokyo · Japan','Paris · France',
+      'Udaipur · India','Queenstown · NZ','Lisbon · Portugal',
+      'Muscat · Oman','Phuket · Thailand','Barcelona · Spain'
+    ]; %>
+    <% ;[...sl_dests, ...sl_dests].forEach(function(d){ %>
+      <div class="sl-mq-pill">
+        <div class="sl-mq-dot"></div>
+        <%= d %>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     CATEGORY STRIP — sticky below navbar
+════════════════════════════════════════════════════════ -->
+<div class="sl-cats-wrap">
+  <div class="sl-cats">
+    <a href="/listings"
+      class="sl-cat <%= (typeof category === 'undefined' || !category) ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+      All
+    </a>
+    <a href="/listings?category=villa"
+      class="sl-cat <%= (typeof category !== 'undefined' && category === 'villa') ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+        <path d="M9 21V12h6v9"/>
+      </svg>
+      Villa
+    </a>
+    <a href="/listings?category=flat"
+      class="sl-cat <%= (typeof category !== 'undefined' && category === 'flat') ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <rect x="2" y="3" width="20" height="18" rx="2"/>
+        <path d="M8 3v18M16 3v18M2 9h20M2 15h20"/>
+      </svg>
+      Flat
+    </a>
+    <a href="/listings?category=room"
+      class="sl-cat <%= (typeof category !== 'undefined' && category === 'room') ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M3 7h18v13H3z"/>
+        <path d="M3 7V4h18v3"/>
+        <path d="M9 13h6"/>
+      </svg>
+      Room
+    </a>
+    <a href="/listings?category=hostel"
+      class="sl-cat <%= (typeof category !== 'undefined' && category === 'hostel') ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M3 21V7l9-4 9 4v14"/>
+        <path d="M12 21V11M7 21v-5h10v5"/>
+      </svg>
+      Hostel
+    </a>
+    <a href="/listings?category=beachfront"
+      class="sl-cat <%= (typeof category !== 'undefined' && category === 'beachfront') ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M2 18c2-2 4 2 6 0s4-2 6 0 4 2 6 0"/>
+        <path d="M12 4a4 4 0 014 4c0 3-4 6-4 6S8 11 8 8a4 4 0 014-4z"/>
+      </svg>
+      Beach
+    </a>
+    <a href="/listings?category=mountain"
+      class="sl-cat <%= (typeof category !== 'undefined' && category === 'mountain') ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M8 21L3 9l5-3 4 6 4-6 5 3-5 12z"/>
+      </svg>
+      Mountain
+    </a>
+    <a href="/listings?category=island"
+      class="sl-cat <%= (typeof category !== 'undefined' && category === 'island') ? 'active' : '' %>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15 15 0 010 20"/>
+      </svg>
+      Island
+    </a>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     LISTINGS GRID
+════════════════════════════════════════════════════════ -->
+<div class="sl-section">
+
+  <div class="sl-sec-hd">
+    <div>
+      <div class="sl-sec-tag">Featured stays</div>
+      <div class="sl-sec-title">Curated for <em>you</em></div>
+    </div>
+    <a href="/listings" class="sl-sec-link">View all stays →</a>
+  </div>
+
+  <!-- count + tax toggle -->
+  <div class="sl-grid-meta">
+    <span class="sl-count">
+      <strong><%= allListings.length %></strong> stay<%= allListings.length !== 1 ? 's' : '' %> found
+    </span>
+    <div class="sl-tax-toggle">
+      <label class="sl-tog" for="taxToggle">
+        <input type="checkbox" id="taxToggle">
+        <span class="sl-tog-slider"></span>
+      </label>
+      <label class="sl-tog-lbl" for="taxToggle">Include 18% GST</label>
+    </div>
+  </div>
+
+  <% if(allListings && allListings.length > 0){ %>
+    <div class="sl-grid">
+      <% allListings.forEach(function(listing, index){ %>
+        <% if(!listing || !listing._id) return; %>
+
+        <a href="/listings/<%= listing._id %>"
+          class="sl-card <%= index === 0 ? 'feat' : '' %>"
+          style="animation-delay:<%= (index * 0.06) %>s">
+
+          <!-- image -->
+          <div class="sl-card-img">
+            <img
+              src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600' %>"
+              alt="<%= listing.title %>" loading="lazy">
+            <div class="sl-card-img-ov"></div>
+
+            <!-- badge -->
+            <div class="sl-card-top">
+              <% if(index === 0){ %>
+                <span class="sl-badge"><%= listing.category || 'Featured' %></span>
+              <% } else if(index === 1){ %>
+                <span class="sl-badge-new">New</span>
+              <% } else if(index === 2){ %>
+                <span class="sl-badge-hot">Popular</span>
+              <% } else if(listing.category){ %>
+                <span class="sl-badge"><%= listing.category %></span>
+              <% } %>
+            </div>
+
+            <!-- rating overlay -->
+            <div class="sl-card-img-meta">
+              <% if(listing.reviews && listing.reviews.length > 0){ %>
+                <% const avg = listing.reviews.reduce(function(s,r){ return s + (r.rating||0); }, 0) / listing.reviews.length; %>
+                <% const full = Math.round(avg); %>
+                <div class="sl-stars">
+                  <% for(let s = 0; s < 5; s++){ %>
+                    <svg viewBox="0 0 24 24" fill="<%= s < full ? '#3B82F6' : 'rgba(59,130,246,0.2)' %>">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  <% } %>
+                </div>
+                <span class="sl-reviews"><%= avg.toFixed(1) %> · <%= listing.reviews.length %> review<%= listing.reviews.length !== 1 ? 's' : '' %></span>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- body -->
+          <div class="sl-card-body">
+            <div class="sl-card-loc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <%= listing.location %><% if(listing.country){ %>, <%= listing.country %><% } %>
+            </div>
+
+            <div class="sl-card-title"><%= listing.title %></div>
+
+            <div class="sl-card-tags">
+              <% if(listing.amenities && listing.amenities.length){ %>
+                <% listing.amenities.slice(0, 3).forEach(function(a){ %>
+                  <span class="sl-tag"><%= a %></span>
+                <% }) %>
+              <% } else { %>
+                <% if(listing.bedrooms){ %><span class="sl-tag"><%= listing.bedrooms %> beds</span><% } %>
+                <% if(listing.bathrooms){ %><span class="sl-tag"><%= listing.bathrooms %> baths</span><% } %>
+                <% if(listing.category){ %><span class="sl-tag"><%= listing.category %></span><% } %>
+              <% } %>
+            </div>
+
+            <div class="sl-card-footer">
+              <div class="sl-price-wrap">
+                <div class="sl-price">
+                  <span class="sl-pcur">₹</span>
+                  <span class="sl-pval" data-base="<%= listing.price %>">
+                    <%= listing.price.toLocaleString('en-IN') %>
+                  </span>
+                  <span class="sl-punit">/ night</span>
+                </div>
+                <div class="sl-ptax">+ 18% GST applicable</div>
+              </div>
+              <span class="sl-book-btn">
+                Book now
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" width="11" height="11">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+        </a>
+      <% }) %>
+    </div>
+
+  <% } else { %>
+    <div class="sl-empty">
+      <div class="sl-empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </div>
+      <h4 class="sl-empty-title">No stays found</h4>
+      <p class="sl-empty-text">Try adjusting your filters or exploring a different destination.</p>
+      <a href="/listings" class="sl-empty-btn">Clear filters</a>
+    </div>
+  <% } %>
+
+</div>
+
+
+<div class="sl-sep"></div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     WHY STAYSCAPE
+════════════════════════════════════════════════════════ -->
+<div class="sl-section">
+  <div class="sl-sec-hd">
+    <div>
+      <div class="sl-sec-tag">Why StayScape</div>
+      <div class="sl-sec-title">Travel with <em>confidence</em></div>
+    </div>
+  </div>
+  <div class="sl-why-grid">
+    <div class="sl-why-card">
+      <div class="sl-why-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="sl-why-title">Verified listings</div>
+      <div class="sl-why-desc">Every property is personally reviewed for quality, accuracy and safety. No surprises — just the stay you imagined.</div>
+      <a href="/safety" class="sl-why-link">
+        Learn more
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="11" height="11">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    <div class="sl-why-card">
+      <div class="sl-why-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <rect x="1" y="4" width="22" height="16" rx="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+      </div>
+      <div class="sl-why-title">Secure payments</div>
+      <div class="sl-why-desc">Escrow-style protection keeps your money safe. Funds only release to hosts after successful check-in.</div>
+      <a href="/host-protection" class="sl-why-link">
+        Learn more
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="11" height="11">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    <div class="sl-why-card">
+      <div class="sl-why-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+      </div>
+      <div class="sl-why-title">24/7 host messaging</div>
+      <div class="sl-why-desc">Chat directly with property owners before, during and after your stay. Real people, instant responses.</div>
+      <a href="/chat/chatbot" class="sl-why-link">
+        Learn more
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="11" height="11">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── TAX TOGGLE ── */
+  var toggle = document.getElementById('taxToggle');
+  if (toggle) {
+    toggle.addEventListener('change', function () {
+      document.querySelectorAll('.sl-pval').forEach(function (el) {
+        var base = Number(el.dataset.base || 0);
+        if (!base) return;
+        el.textContent = (toggle.checked
+          ? Math.round(base * 1.18)
+          : base
+        ).toLocaleString('en-IN');
+      });
+      document.querySelectorAll('.sl-ptax').forEach(function (t) {
+        t.textContent = toggle.checked ? 'GST included' : '+ 18% GST applicable';
+      });
+    });
+  }
+
+  /* ── STAGGERED CARD ANIMATION ── */
+  document.querySelectorAll('.sl-card').forEach(function (card, i) {
+    card.style.animationDelay = (i * 0.06) + 's';
+  });
+
+})();
+</script>

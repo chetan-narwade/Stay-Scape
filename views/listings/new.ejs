@@ -1,0 +1,996 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   NEW LISTING PAGE — blue/cyan palette, Inter font
+═══════════════════════════════════════════════════════════ */
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin   { to{transform:rotate(360deg)} }
+
+/* ── PAGE ── */
+.np-page {
+  min-height: 100vh;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 48px 20px 80px;
+  position: relative; overflow: hidden;
+}
+.np-page::before {
+  content: ''; position: fixed; top: -160px; right: -100px;
+  width: 480px; height: 480px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.06) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.np-page::after {
+  content: ''; position: fixed; bottom: -100px; left: -80px;
+  width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,182,212,.04) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── CARD ── */
+.np-card {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 680px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 24px; overflow: hidden;
+  animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both;
+  box-shadow: 0 28px 70px rgba(0,0,0,.45);
+}
+
+/* ── HEADER ── */
+.np-head {
+  padding: 34px 38px 28px;
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.np-head::before {
+  content: ''; position: absolute; top: -80px; right: -60px;
+  width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.np-head::after {
+  content: ''; position: absolute; bottom: -40px; left: -40px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,182,212,.04) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.np-eyebrow {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600; margin-bottom: 10px;
+}
+.np-eyebrow::before {
+  content: ''; display: block; width: 20px; height: 1px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+.np-head-title {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 300; color: var(--text); line-height: 1.1;
+  position: relative; z-index: 1;
+}
+.np-head-title em { font-style: italic; color: var(--cyan); }
+.np-head-sub {
+  font-size: 13px; color: var(--muted);
+  margin-top: 8px; position: relative; z-index: 1;
+}
+
+/* progress bar */
+.np-progress {
+  display: flex; gap: 0; margin-top: 22px; position: relative; z-index: 1;
+}
+.np-prog-step {
+  flex: 1; height: 3px;
+  background: rgba(255,255,255,.07);
+  transition: background .4s;
+}
+.np-prog-step:first-child { border-radius: 999px 0 0 999px; }
+.np-prog-step:last-child  { border-radius: 0 999px 999px 0; }
+.np-prog-step.done   { background: var(--blue); }
+.np-prog-step.active { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+.np-prog-labels {
+  display: flex; justify-content: space-between; margin-top: 6px;
+}
+.np-prog-lbl {
+  font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); transition: color .3s; flex: 1; text-align: center;
+}
+.np-prog-lbl.active { color: var(--blue); }
+.np-prog-lbl.done   { color: rgba(59,130,246,.5); }
+
+/* ── FORM BODY ── */
+.np-body { padding: 28px 38px 10px; }
+
+/* section label */
+.np-sec {
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  margin: 24px 0 16px;
+}
+.np-sec:first-child { margin-top: 0; }
+.np-sec::before {
+  content: ''; display: block; width: 16px; height: 1px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+.np-sec::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* field wrapper */
+.np-field { margin-bottom: 16px; }
+.np-lbl {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); font-weight: 500; margin-bottom: 7px;
+}
+.np-lbl-req { font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: rgba(239,68,68,.6); }
+.np-lbl-opt { font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: rgba(156,163,176,.5); }
+
+/* inputs */
+.np-input, .np-textarea, .np-select {
+  width: 100%; background: var(--s3);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 15px; font-size: 14px; color: var(--text);
+  outline: none;
+  transition: border-color .22s, box-shadow .22s, background .22s;
+  -webkit-appearance: none;
+}
+.np-input::placeholder, .np-textarea::placeholder { color: var(--muted); }
+.np-input:focus, .np-textarea:focus, .np-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--glow-blue);
+  background: rgba(28,28,40,.9);
+}
+.np-input:hover:not(:focus),
+.np-textarea:hover:not(:focus),
+.np-select:hover:not(:focus) { border-color: rgba(59,130,246,.3); }
+.np-textarea { resize: vertical; min-height: 110px; line-height: 1.7; }
+.np-select option { background: var(--s2); color: var(--text); }
+
+/* grid helpers */
+.np-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.np-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* price input */
+.np-price-wrap { position: relative; }
+.np-price-pre {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 16px; font-weight: 700; color: var(--blue);
+  pointer-events: none; z-index: 1;
+}
+.np-price-inp { padding-left: 30px; }
+
+/* char count */
+.np-char { font-size: 10px; color: var(--muted); text-align: right; margin-top: 4px; }
+.np-char.warn { color: #FBBF24; }
+.np-char.over { color: var(--danger); }
+
+/* ── CATEGORY CARDS ── */
+.np-cats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.np-cat-opt { position: relative; }
+.np-cat-opt input[type=radio] { position: absolute; opacity: 0; width: 0; height: 0; }
+.np-cat-lbl {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 14px 8px;
+  background: var(--s3); border: 1px solid var(--border); border-radius: 12px;
+  cursor: pointer; text-align: center;
+  transition: border-color .2s, background .2s, transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.np-cat-lbl:hover {
+  border-color: rgba(59,130,246,.3);
+  background: rgba(28,28,40,.9);
+  transform: translateY(-2px);
+}
+.np-cat-icon {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: var(--s2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); transition: background .2s, border-color .2s, color .2s;
+}
+.np-cat-icon svg { width: 16px; height: 16px; }
+.np-cat-name {
+  font-size: 11px; color: var(--muted);
+  letter-spacing: .04em; transition: color .2s;
+}
+.np-cat-opt input:checked + .np-cat-lbl {
+  border-color: var(--blue);
+  background: rgba(59,130,246,.08);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px rgba(59,130,246,.15);
+}
+.np-cat-opt input:checked + .np-cat-lbl .np-cat-icon {
+  background: rgba(59,130,246,.1);
+  border-color: rgba(59,130,246,.3);
+  color: var(--blue);
+}
+.np-cat-opt input:checked + .np-cat-lbl .np-cat-name { color: var(--blue); font-weight: 600; }
+
+/* ── AMENITY CHECKBOXES ── */
+.np-amenities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.np-amen-opt { position: relative; }
+.np-amen-opt input[type=checkbox] { position: absolute; opacity: 0; width: 0; height: 0; }
+.np-amen-lbl {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--s3); border: 1px solid var(--border); border-radius: 10px;
+  cursor: pointer; font-size: 12px; color: var(--muted); letter-spacing: .04em;
+  transition: border-color .18s, background .18s, color .18s;
+  min-height: 44px;
+}
+.np-amen-lbl svg { width: 13px; height: 13px; color: var(--muted); flex-shrink: 0; transition: color .18s; }
+.np-amen-lbl:hover { border-color: rgba(59,130,246,.3); color: var(--text); }
+.np-amen-opt input:checked + .np-amen-lbl {
+  border-color: var(--blue);
+  background: rgba(59,130,246,.08);
+  color: var(--blue);
+}
+.np-amen-opt input:checked + .np-amen-lbl svg { color: var(--blue); }
+/* checkmark */
+.np-amen-check {
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  margin-left: auto; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .18s;
+}
+.np-amen-check svg { width: 10px; height: 10px; color: var(--blue); display: none; }
+.np-amen-opt input:checked + .np-amen-lbl .np-amen-check {
+  background: rgba(59,130,246,.1);
+  border-color: var(--blue);
+}
+.np-amen-opt input:checked + .np-amen-lbl .np-amen-check svg { display: block; }
+
+/* ── COUNTER INPUTS ── */
+.np-counter-wrap {
+  display: flex; align-items: center;
+  background: var(--s3); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+  transition: border-color .22s;
+}
+.np-counter-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--glow-blue); }
+.np-counter-btn {
+  width: 44px; height: 46px; background: transparent; border: none;
+  color: var(--muted); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .18s, color .18s; flex-shrink: 0;
+}
+.np-counter-btn:hover { background: rgba(59,130,246,.08); color: var(--blue); }
+.np-counter-inp {
+  flex: 1; background: transparent; border: none; outline: none;
+  text-align: center; font-size: 16px; font-weight: 700;
+  color: var(--text); width: 100%; min-width: 0;
+}
+.np-counter-inp::-webkit-outer-spin-button,
+.np-counter-inp::-webkit-inner-spin-button { -webkit-appearance: none; }
+.np-counter-sep { width: 1px; height: 28px; background: var(--border); }
+
+/* ── UPLOAD ZONE ── */
+.np-upload {
+  position: relative;
+  border: 1px dashed rgba(59,130,246,.25); border-radius: 10px;
+  background: var(--s3); padding: 28px 20px; text-align: center;
+  cursor: pointer; transition: border-color .22s, background .22s;
+}
+.np-upload:hover, .np-upload.drag {
+  border-color: var(--blue);
+  background: rgba(59,130,246,.06);
+}
+.np-upload input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+.np-upload-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(59,130,246,.08);
+  border: 1px solid rgba(59,130,246,.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue); margin: 0 auto 12px;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.np-upload:hover .np-upload-icon,
+.np-upload.drag  .np-upload-icon { transform: scale(1.1) translateY(-2px); }
+.np-upload-icon svg { width: 20px; height: 20px; }
+.np-upload-title { font-size: 14px; color: var(--text); font-weight: 600; margin-bottom: 4px; }
+.np-upload-sub   { font-size: 11px; color: var(--muted); }
+.np-upload-chosen {
+  display: none; margin-top: 10px; font-size: 12px; color: var(--success);
+  align-items: center; justify-content: center; gap: 6px;
+}
+.np-upload-chosen svg { width: 14px; height: 14px; }
+.np-img-preview {
+  display: none; margin-top: 14px; border-radius: 10px;
+  overflow: hidden; border: 1px solid var(--border); height: 180px;
+}
+.np-img-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── FOOTER ACTIONS ── */
+.np-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 22px 38px 30px;
+  border-top: 1px solid var(--border); flex-wrap: wrap;
+}
+.np-cancel {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 22px; background: transparent;
+  border: 1px solid rgba(255,255,255,.1); border-radius: 999px;
+  font-size: 13px; color: var(--muted); cursor: pointer; text-decoration: none;
+  transition: border-color .2s, color .2s, transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.np-cancel:hover {
+  border-color: rgba(239,68,68,.35);
+  color: var(--danger); transform: translateY(-1px);
+}
+.np-submit {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 32px;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  color: #fff; border: none; border-radius: 999px;
+  font-size: 14px; font-weight: 600; letter-spacing: .02em;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+}
+.np-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59,130,246,.35);
+  filter: brightness(1.08);
+}
+.np-submit:active { transform: scale(.97); }
+.np-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── VALIDATION GLOW ── */
+.np-input.valid, .np-textarea.valid {
+  border-color: rgba(16,185,129,.4);
+}
+.np-input.invalid, .np-textarea.invalid {
+  border-color: rgba(239,68,68,.4);
+  box-shadow: 0 0 0 3px rgba(239,68,68,.08);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+
+/* ── TABLET 768px ── */
+@media (max-width: 768px) {
+  .np-cats { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .np-amenities { grid-template-columns: repeat(2, 1fr); }
+  .np-row3 { grid-template-columns: 1fr 1fr; }
+  .np-row3 .np-field:last-child { grid-column: span 2; }
+}
+
+/* ── MOBILE 640px ── */
+@media (max-width: 640px) {
+  .np-page { padding: 0 0 60px; }
+
+  .np-card {
+    border-radius: 0;
+    border-left: none; border-right: none; border-top: none;
+    max-width: 100%;
+  }
+
+  .np-head { padding: 24px 18px 20px; }
+  .np-head-title { font-size: 24px; }
+  .np-head-sub { font-size: 12px; }
+
+  .np-body { padding: 20px 16px 8px; }
+
+  .np-footer {
+    padding: 16px 16px 24px;
+    flex-direction: column;
+  }
+  .np-cancel, .np-submit {
+    width: 100%; justify-content: center;
+  }
+
+  /* category: 4-col stays but tighter */
+  .np-cats { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .np-cat-lbl { padding: 10px 4px; gap: 5px; }
+  .np-cat-icon { width: 28px; height: 28px; border-radius: 7px; }
+  .np-cat-icon svg { width: 14px; height: 14px; }
+  .np-cat-name { font-size: 9px; }
+
+  /* counters: single column */
+  .np-row2 { grid-template-columns: 1fr; }
+  .np-row3 { grid-template-columns: 1fr; }
+  .np-row3 .np-field:last-child { grid-column: span 1; }
+
+  /* amenities: 2-col */
+  .np-amenities { grid-template-columns: 1fr 1fr; }
+  .np-amen-lbl { font-size: 11px; padding: 9px 10px; gap: 6px; }
+
+  /* inputs */
+  .np-input, .np-textarea, .np-select { font-size: 16px; } /* prevent zoom on iOS */
+  .np-counter-btn { width: 40px; height: 44px; }
+  .np-counter-inp { font-size: 15px; }
+
+  /* upload */
+  .np-upload { padding: 22px 16px; }
+  .np-upload-title { font-size: 13px; }
+  .np-img-preview { height: 150px; }
+
+  /* progress labels — shorter */
+  .np-prog-lbl { font-size: 8px; letter-spacing: .05em; }
+}
+
+/* ── SMALL MOBILE 380px ── */
+@media (max-width: 380px) {
+  .np-head { padding: 20px 14px 18px; }
+  .np-body { padding: 18px 14px 8px; }
+  .np-footer { padding: 14px 14px 22px; }
+
+  /* 2-col categories on tiny screens */
+  .np-cats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .np-cat-lbl { padding: 12px 8px; gap: 6px; }
+  .np-cat-icon { width: 32px; height: 32px; }
+  .np-cat-icon svg { width: 15px; height: 15px; }
+  .np-cat-name { font-size: 10px; }
+
+  /* amenities: 1-col on very small */
+  .np-amenities { grid-template-columns: 1fr; }
+
+  .np-prog-lbl { display: none; } /* hide labels on tiny, keep bars */
+}
+</style>
+
+
+<div class="np-page">
+<div class="np-card">
+
+  <!-- ── HEADER ── -->
+  <div class="np-head">
+    <div class="np-eyebrow">Host your space</div>
+    <h1 class="np-head-title">Create a new <em>listing</em></h1>
+    <p class="np-head-sub">Share your property with travellers from around the world.</p>
+    <div style="margin-top:22px;position:relative;z-index:1;">
+      <div class="np-progress">
+        <div class="np-prog-step done"></div>
+        <div class="np-prog-step done"></div>
+        <div class="np-prog-step active"></div>
+        <div class="np-prog-step"></div>
+        <div class="np-prog-step"></div>
+      </div>
+      <div class="np-prog-labels">
+        <span class="np-prog-lbl done">Basics</span>
+        <span class="np-prog-lbl done">Type</span>
+        <span class="np-prog-lbl active">Details</span>
+        <span class="np-prog-lbl">Pricing</span>
+        <span class="np-prog-lbl">Photo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FORM ── -->
+  <form action="/listings" method="POST" enctype="multipart/form-data"
+    novalidate id="newListingForm">
+
+    <div class="np-body">
+
+      <!-- ── SECTION 1: BASIC INFO ── -->
+      <div class="np-sec">Basic information</div>
+
+      <div class="np-field">
+        <div class="np-lbl">Title <span class="np-lbl-req">Required</span></div>
+        <input class="np-input" type="text" name="listing[title]" id="np-title"
+          placeholder="e.g. Cosy Sea-View Villa in Goa"
+          required maxlength="80" autocomplete="off">
+        <div class="np-char" id="titleChar">0 / 80</div>
+      </div>
+
+      <div class="np-field">
+        <div class="np-lbl">Description <span class="np-lbl-req">Required</span></div>
+        <textarea class="np-textarea" name="listing[description]" id="np-desc"
+          placeholder="Describe what makes your place special — amenities, surroundings, house rules…"
+          required maxlength="800" rows="5"></textarea>
+        <div class="np-char" id="descChar">0 / 800</div>
+      </div>
+
+      <!-- ── SECTION 2: PROPERTY TYPE ── -->
+      <div class="np-sec">Property type</div>
+
+      <div class="np-field">
+        <input type="hidden" name="listing[category]" id="np-cat-val" value="">
+        <div class="np-cats" id="catGrid">
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-villa" value="villa">
+            <label class="np-cat-lbl" for="cat-villa">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+                  <path d="M9 21V12h6v9"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Villa</span>
+            </label>
+          </div>
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-flat" value="flat">
+            <label class="np-cat-lbl" for="cat-flat">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <rect x="2" y="3" width="20" height="18" rx="2"/>
+                  <path d="M8 3v18M16 3v18M2 9h20M2 15h20"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Flat</span>
+            </label>
+          </div>
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-room" value="room">
+            <label class="np-cat-lbl" for="cat-room">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M3 7h18v13H3z"/>
+                  <path d="M3 7V4h18v3"/>
+                  <path d="M9 13h6"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Room</span>
+            </label>
+          </div>
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-hostel" value="hostel">
+            <label class="np-cat-lbl" for="cat-hostel">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M3 21V7l9-4 9 4v14"/>
+                  <path d="M12 21V11M7 21v-5h10v5"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Hostel</span>
+            </label>
+          </div>
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-beach" value="beachfront">
+            <label class="np-cat-lbl" for="cat-beach">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M2 18c2-2 4 2 6 0s4-2 6 0 4 2 6 0"/>
+                  <path d="M12 4a4 4 0 014 4c0 3-4 6-4 6S8 11 8 8a4 4 0 014-4z"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Beach</span>
+            </label>
+          </div>
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-mtn" value="mountain">
+            <label class="np-cat-lbl" for="cat-mtn">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M8 21L3 9l5-3 4 6 4-6 5 3-5 12z"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Mountain</span>
+            </label>
+          </div>
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-island" value="island">
+            <label class="np-cat-lbl" for="cat-island">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M2 12h20M12 2a15 15 0 010 20"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Island</span>
+            </label>
+          </div>
+
+          <div class="np-cat-opt">
+            <input type="radio" name="_catUI" id="cat-farm" value="farm">
+            <label class="np-cat-lbl" for="cat-farm">
+              <div class="np-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                  <path d="M2 20h20M4 20V10l8-6 8 6v10"/>
+                  <path d="M10 20v-6h4v6"/>
+                </svg>
+              </div>
+              <span class="np-cat-name">Farm</span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 3: SPACE DETAILS ── -->
+      <div class="np-sec">Space details</div>
+
+      <div class="np-row3">
+        <div class="np-field" style="margin-bottom:0">
+          <div class="np-lbl">Bedrooms <span class="np-lbl-req">Req</span></div>
+          <div class="np-counter-wrap">
+            <button type="button" class="np-counter-btn" data-target="np-bedrooms" data-op="dec">−</button>
+            <div class="np-counter-sep"></div>
+            <input class="np-counter-inp" type="number" name="listing[bedrooms]"
+              id="np-bedrooms" value="1" min="0" max="50" required readonly>
+            <div class="np-counter-sep"></div>
+            <button type="button" class="np-counter-btn" data-target="np-bedrooms" data-op="inc">+</button>
+          </div>
+        </div>
+
+        <div class="np-field" style="margin-bottom:0">
+          <div class="np-lbl">Bathrooms <span class="np-lbl-req">Req</span></div>
+          <div class="np-counter-wrap">
+            <button type="button" class="np-counter-btn" data-target="np-bathrooms" data-op="dec">−</button>
+            <div class="np-counter-sep"></div>
+            <input class="np-counter-inp" type="number" name="listing[bathrooms]"
+              id="np-bathrooms" value="1" min="0" max="50" required readonly>
+            <div class="np-counter-sep"></div>
+            <button type="button" class="np-counter-btn" data-target="np-bathrooms" data-op="inc">+</button>
+          </div>
+        </div>
+
+        <div class="np-field" style="margin-bottom:0">
+          <div class="np-lbl">Max guests <span class="np-lbl-req">Req</span></div>
+          <div class="np-counter-wrap">
+            <button type="button" class="np-counter-btn" data-target="np-guests" data-op="dec">−</button>
+            <div class="np-counter-sep"></div>
+            <input class="np-counter-inp" type="number" name="listing[maxGuests]"
+              id="np-guests" value="2" min="1" max="50" required readonly>
+            <div class="np-counter-sep"></div>
+            <button type="button" class="np-counter-btn" data-target="np-guests" data-op="inc">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 4: AMENITIES ── -->
+      <div class="np-sec">
+        Amenities
+        <span style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:4px;">(select all that apply)</span>
+      </div>
+
+      <div class="np-amenities">
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-wifi" value="Wi-Fi">
+          <label class="np-amen-lbl" for="am-wifi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/>
+              <path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            Wi-Fi
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-pool" value="Pool">
+          <label class="np-amen-lbl" for="am-pool">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M2 12c1.5-2 3 2 4.5 0s3-2 4.5 0 3 2 4.5 0 3-2 4.5 0"/>
+              <path d="M2 18c1.5-2 3 2 4.5 0s3-2 4.5 0 3 2 4.5 0 3-2 4.5 0"/><path d="M9 4l3 4 3-4"/>
+            </svg>
+            Pool
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-ac" value="Air conditioning">
+          <label class="np-amen-lbl" for="am-ac">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="2" y="6" width="20" height="10" rx="2"/>
+              <path d="M8 16v2M12 16v2M16 16v2M8 6V4M12 6V4M16 6V4"/>
+            </svg>
+            AC
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-kitchen" value="Kitchen">
+          <label class="np-amen-lbl" for="am-kitchen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M6 2v6a3 3 0 006 0V2"/><path d="M18 2v20M3 14h18"/>
+            </svg>
+            Kitchen
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-parking" value="Parking">
+          <label class="np-amen-lbl" for="am-parking">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M9 8h4a2 2 0 010 4H9v4"/><path d="M9 8v8"/>
+            </svg>
+            Parking
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-tv" value="TV">
+          <label class="np-amen-lbl" for="am-tv">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="2" y="7" width="20" height="13" rx="2"/><path d="M8 3l4 4 4-4"/>
+            </svg>
+            TV
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-gym" value="Gym">
+          <label class="np-amen-lbl" for="am-gym">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M6.5 6.5h11M6.5 17.5h11M3 10h3v4H3zM18 10h3v4h-3zM6.5 12h11"/>
+            </svg>
+            Gym
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-pets" value="Pet friendly">
+          <label class="np-amen-lbl" for="am-pets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="4.5" cy="9.5" r="2.5"/><circle cx="9" cy="5.5" r="2.5"/>
+              <circle cx="15" cy="5.5" r="2.5"/><circle cx="19.5" cy="9.5" r="2.5"/>
+              <path d="M12 14c-4 0-7 1.5-7 5s3 5 7 5 7-2 7-5-3-5-7-5z"/>
+            </svg>
+            Pet friendly
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+        <div class="np-amen-opt">
+          <input type="checkbox" name="listing[amenities][]" id="am-breakfast" value="Breakfast">
+          <label class="np-amen-lbl" for="am-breakfast">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M18 8h1a4 4 0 010 8h-1"/>
+              <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+              <line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+            </svg>
+            Breakfast
+            <div class="np-amen-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </label>
+        </div>
+
+      </div>
+
+      <!-- ── SECTION 5: PRICING ── -->
+      <div class="np-sec">Pricing</div>
+
+      <div class="np-field">
+        <div class="np-lbl">Price per night (₹) <span class="np-lbl-req">Required</span></div>
+        <div class="np-price-wrap">
+          <span class="np-price-pre">₹</span>
+          <input class="np-input np-price-inp" type="number"
+            name="listing[price]" id="np-price"
+            placeholder="0" required min="0">
+        </div>
+      </div>
+
+      <!-- ── SECTION 6: LOCATION ── -->
+      <div class="np-sec">Location</div>
+
+      <div class="np-row2" style="margin-bottom:16px;">
+        <div class="np-field" style="margin-bottom:0">
+          <div class="np-lbl">City / area <span class="np-lbl-req">Required</span></div>
+          <input class="np-input" type="text" name="listing[location]"
+            id="np-loc" placeholder="e.g. Goa" required autocomplete="off">
+        </div>
+        <div class="np-field" style="margin-bottom:0">
+          <div class="np-lbl">Country <span class="np-lbl-req">Required</span></div>
+          <input class="np-input" type="text" name="listing[country]"
+            id="np-country" placeholder="e.g. India" required autocomplete="off">
+        </div>
+      </div>
+
+      <!-- ── SECTION 7: PHOTO ── -->
+      <div class="np-sec">Listing photo</div>
+
+      <div class="np-field">
+        <div class="np-upload" id="npUpload">
+          <input type="file" name="listing[image]" id="npFile" accept="image/*" required>
+          <div class="np-upload-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="np-upload-title">Drop your photo here</div>
+          <div class="np-upload-sub">or tap to browse · JPG, PNG, WEBP · max 5 MB</div>
+          <div class="np-upload-chosen" id="npFileName">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span id="npFileText"></span>
+          </div>
+        </div>
+        <div class="np-img-preview" id="npPreview">
+          <img id="npPreviewImg" src="" alt="Preview">
+        </div>
+      </div>
+
+    </div><!-- /.np-body -->
+
+    <!-- ── FOOTER ── -->
+    <div class="np-footer">
+      <a href="/listings" class="np-cancel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" width="13" height="13">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Cancel
+      </a>
+      <button type="submit" class="np-submit" id="npSubmit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" width="14" height="14">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Publish listing
+      </button>
+    </div>
+
+  </form>
+</div>
+</div>
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── char counters ── */
+  function charCounter(id, ctId, max) {
+    var el = document.getElementById(id);
+    var ct = document.getElementById(ctId);
+    if (!el || !ct) return;
+    function upd() {
+      var n = el.value.length;
+      ct.textContent = n + ' / ' + max;
+      ct.className = 'np-char' + (n > max ? ' over' : n > max * .85 ? ' warn' : '');
+    }
+    el.addEventListener('input', upd); upd();
+  }
+  charCounter('np-title', 'titleChar', 80);
+  charCounter('np-desc',  'descChar',  800);
+
+  /* ── category radio → hidden input ── */
+  var catVal = document.getElementById('np-cat-val');
+  document.querySelectorAll('input[name="_catUI"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      if (catVal) catVal.value = this.value;
+    });
+  });
+
+  /* ── counter buttons ── */
+  document.querySelectorAll('.np-counter-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var inp = document.getElementById(this.dataset.target);
+      if (!inp) return;
+      var op  = this.dataset.op;
+      var min = Number(inp.min || 0);
+      var max = Number(inp.max || 99);
+      var v   = Number(inp.value) || 0;
+      v = op === 'inc' ? Math.min(v + 1, max) : Math.max(v - 1, min);
+      inp.value = v;
+    });
+  });
+
+  /* ── file upload + drag & drop ── */
+  var fileInput = document.getElementById('npFile');
+  var fileNameEl = document.getElementById('npFileName');
+  var fileText  = document.getElementById('npFileText');
+  var uploadBox = document.getElementById('npUpload');
+  var preview   = document.getElementById('npPreview');
+  var previewImg = document.getElementById('npPreviewImg');
+
+  function handleFile(file) {
+    if (!file) return;
+    fileText.textContent = file.name;
+    fileNameEl.style.display = 'flex';
+    uploadBox.style.borderColor = 'var(--blue)';
+    uploadBox.style.background   = 'rgba(59,130,246,.06)';
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      previewImg.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function () {
+      if (this.files && this.files[0]) handleFile(this.files[0]);
+    });
+  }
+  if (uploadBox) {
+    uploadBox.addEventListener('dragover', function (e) {
+      e.preventDefault(); this.classList.add('drag');
+    });
+    ['dragleave', 'dragend'].forEach(function (ev) {
+      uploadBox.addEventListener(ev, function () { this.classList.remove('drag'); });
+    });
+    uploadBox.addEventListener('drop', function (e) {
+      e.preventDefault(); this.classList.remove('drag');
+      var f = e.dataTransfer.files[0];
+      if (f) { fileInput.files = e.dataTransfer.files; handleFile(f); }
+    });
+  }
+
+  /* ── submit — spinner + validation ── */
+  var form   = document.getElementById('newListingForm');
+  var submit = document.getElementById('npSubmit');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      if (!form.checkValidity()) {
+        e.preventDefault(); e.stopPropagation();
+        var first = form.querySelector(':invalid');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        /* shake invalid fields */
+        form.querySelectorAll(':invalid').forEach(function (el) {
+          el.classList.add('invalid');
+          setTimeout(function () { el.classList.remove('invalid'); }, 1500);
+        });
+        return;
+      }
+      if (submit) {
+        submit.disabled = true;
+        submit.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg>'
+          + 'Publishing…';
+      }
+    });
+  }
+
+  /* ── inline validation on blur ── */
+  document.querySelectorAll('.np-input, .np-textarea').forEach(function (inp) {
+    inp.addEventListener('blur', function () {
+      if (!this.required) return;
+      if (this.value.trim()) {
+        this.classList.remove('invalid'); this.classList.add('valid');
+      } else {
+        this.classList.remove('valid'); this.classList.add('invalid');
+      }
+    });
+    inp.addEventListener('focus', function () {
+      this.classList.remove('valid', 'invalid');
+      this.style.borderColor = '';
+    });
+  });
+
+})();
+</script>

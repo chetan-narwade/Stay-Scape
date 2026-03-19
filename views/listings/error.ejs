@@ -1,0 +1,255 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   ERROR PAGE — blue/cyan palette, Inter font
+═══════════════════════════════════════════════════════════ */
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse   { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 60%{box-shadow:0 0 0 10px rgba(239,68,68,.07)} }
+@keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
+
+/* ── PAGE ── */
+.err-page {
+  min-height: calc(100vh - 64px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 20px 80px;
+  position: relative; overflow: hidden;
+}
+
+/* ambient red glow */
+.err-page::before {
+  content: ''; position: absolute;
+  top: -100px; left: 50%; transform: translateX(-50%);
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(239,68,68,.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+/* blue glow bottom */
+.err-page::after {
+  content: ''; position: absolute;
+  bottom: -60px; right: -60px;
+  width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── CARD ── */
+.err-card {
+  width: 100%; max-width: 520px;
+  background: var(--s2);
+  border: 1px solid rgba(239,68,68,.2);
+  border-radius: 22px; overflow: hidden;
+  animation: fadeUp .55s cubic-bezier(.22,1,.36,1) both;
+  box-shadow: 0 24px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(239,68,68,.06);
+  position: relative; z-index: 1;
+}
+
+/* red accent top beam */
+.err-card::before {
+  content: ''; display: block; width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--danger), rgba(239,68,68,.4), transparent);
+}
+
+/* ── ICON ZONE ── */
+.err-icon-zone {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 36px 32px 24px;
+  border-bottom: 1px solid rgba(239,68,68,.15);
+  background: var(--s1);
+  position: relative; overflow: hidden;
+}
+.err-icon-zone::before {
+  content: ''; position: absolute; top: -60px; right: -40px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(239,68,68,.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.err-icon-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.25);
+  display: flex; align-items: center; justify-content: center;
+  animation: pulse 2.5s ease-out infinite, float 4s ease-in-out infinite;
+  margin-bottom: 20px; position: relative; z-index: 1;
+}
+.err-icon-ring svg { width: 28px; height: 28px; color: var(--danger); }
+
+.err-status {
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--danger); font-weight: 600;
+  display: flex; align-items: center; gap: 7px;
+  margin-bottom: 10px; position: relative; z-index: 1;
+}
+.err-status::before, .err-status::after {
+  content: ''; display: block; width: 24px; height: 1px;
+  background: rgba(239,68,68,.4);
+}
+
+.err-title {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 300; color: var(--text);
+  text-align: center; line-height: 1.15;
+  position: relative; z-index: 1;
+}
+.err-title em { font-style: italic; color: var(--danger); }
+
+/* ── MESSAGE ZONE ── */
+.err-msg-zone { padding: 24px 32px 28px; }
+
+.err-msg-label {
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.err-msg-label::before {
+  content: ''; display: block; width: 12px; height: 1px;
+  background: var(--muted);
+}
+
+.err-msg-box {
+  background: rgba(239,68,68,.07);
+  border: 1px solid rgba(239,68,68,.2);
+  border-left: 2px solid var(--danger);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 16px;
+  font-size: 14px; color: var(--text); line-height: 1.72;
+}
+
+/* ── ACTIONS ── */
+.err-actions {
+  display: flex; gap: 10px;
+  padding: 0 32px 28px; flex-wrap: wrap;
+}
+
+.err-btn-back {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 22px; background: transparent;
+  border: 1px solid var(--border); border-radius: 999px;
+  font-size: 13px; font-weight: 500; color: var(--muted);
+  cursor: pointer; text-decoration: none;
+  transition: border-color .2s, color .2s, transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.err-btn-back:hover {
+  border-color: rgba(59,130,246,.4); color: var(--blue); transform: translateY(-1px);
+}
+
+.err-btn-home {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 24px;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+  color: #fff; border: none; border-radius: 999px;
+  font-size: 13px; font-weight: 600; letter-spacing: .02em;
+  cursor: pointer; text-decoration: none;
+  position: relative; overflow: hidden;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+}
+.err-btn-home:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59,130,246,.35);
+  filter: brightness(1.08);
+}
+.err-btn-home:active { transform: scale(.97); }
+
+/* ── FOOTER ── */
+.err-footer {
+  border-top: 1px solid rgba(239,68,68,.12);
+  padding: 14px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.err-footer-left {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; color: var(--muted);
+}
+.err-footer-left svg { width: 12px; height: 12px; color: var(--cyan); flex-shrink: 0; }
+.err-code {
+  font-size: 10px; letter-spacing: .1em; color: var(--muted);
+  background: var(--s3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 9px;
+}
+
+/* ══ RESPONSIVE ══════════════════════════════════════════════ */
+@media (max-width: 540px) {
+  .err-page { padding: 24px 16px 60px; align-items: flex-start; }
+  .err-card { border-radius: 16px; }
+  .err-icon-zone { padding: 28px 20px 20px; }
+  .err-msg-zone  { padding: 20px 20px 22px; }
+  .err-actions   { padding: 0 20px 22px; flex-direction: column; }
+  .err-btn-back, .err-btn-home { width: 100%; justify-content: center; }
+  .err-footer    { padding: 12px 20px; }
+  .err-title     { font-size: 22px; }
+}
+
+@media (max-width: 380px) {
+  .err-page { padding: 0 0 60px; }
+  .err-card { border-radius: 0; border-left: none; border-right: none; border-top: none; }
+  .err-icon-zone { padding: 24px 16px 18px; }
+  .err-msg-zone  { padding: 18px 16px 20px; }
+  .err-actions   { padding: 0 16px 20px; }
+  .err-footer    { padding: 10px 16px; }
+  .err-icon-ring { width: 60px; height: 60px; }
+  .err-icon-ring svg { width: 24px; height: 24px; }
+}
+</style>
+
+
+<div class="err-page">
+  <div class="err-card">
+
+    <!-- icon zone -->
+    <div class="err-icon-zone">
+      <div class="err-icon-ring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <div class="err-status">Something went wrong</div>
+      <h1 class="err-title">Oops! An <em>error</em> occurred</h1>
+    </div>
+
+    <!-- message zone -->
+    <div class="err-msg-zone">
+      <div class="err-msg-label">Error details</div>
+      <div class="err-msg-box"><%= message %></div>
+    </div>
+
+    <!-- actions -->
+    <div class="err-actions">
+      <a href="javascript:history.back()" class="err-btn-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" width="13" height="13">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Go back
+      </a>
+      <a href="/listings" class="err-btn-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" width="13" height="13">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+        Browse listings
+      </a>
+    </div>
+
+    <!-- footer -->
+    <div class="err-footer">
+      <div class="err-footer-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        StayScape — trusted & secure
+      </div>
+      <span class="err-code">ERR · 500</span>
+    </div>
+
+  </div>
+</div>

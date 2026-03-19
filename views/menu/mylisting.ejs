@@ -1,0 +1,1279 @@
+<% layout("layouts/boilerplate") %>
+
+  <style>
+
+
+    /* ── KEYFRAMES ── */
+    @keyframes ml-fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(22px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes ml-scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(.95)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+
+    @keyframes ml-shimmer {
+      0% {
+        background-position: 200% center
+      }
+
+      100% {
+        background-position: -200% center
+      }
+    }
+
+    @keyframes ml-float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-7px)
+      }
+    }
+
+    @keyframes ml-beamSlide {
+      0% {
+        opacity: 0;
+        transform: translateX(-100%)
+      }
+
+      20% {
+        opacity: 1
+      }
+
+      80% {
+        opacity: 1
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(100%)
+      }
+    }
+
+    /* ── PAGE SHELL ── */
+    .ml-page {
+      min-height: 100vh;
+      background: var(--bg);
+      padding: 52px 24px 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* glows — mirrors index hero */
+    .ml-page::before {
+      content: '';
+      position: fixed;
+      top: -160px;
+      right: -100px;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, .07) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ml-page::after {
+      content: '';
+      position: fixed;
+      bottom: -80px;
+      left: -60px;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, .04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* dot-grid — same as hero */
+    .ml-grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(59, 130, 246, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, .025) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    /* beam line — one-shot on load */
+    .ml-beam {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      z-index: 2;
+      background: linear-gradient(90deg, transparent 0%, var(--blue) 45%, var(--cyan) 55%, transparent 100%);
+      animation: ml-beamSlide 5s ease-in-out .3s both;
+      pointer-events: none;
+    }
+
+    .ml-wrap {
+      max-width: 1060px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ── FLASH MESSAGES ── */
+    .ml-flash {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: var(--font-body);
+      animation: ml-fadeUp .3s ease both;
+    }
+
+    .ml-flash-success {
+      background: rgba(74, 222, 128, .07);
+      border: 1px solid rgba(74, 222, 128, .2);
+      color: var(--success);
+    }
+
+    .ml-flash-error {
+      background: rgba(248, 113, 113, .07);
+      border: 1px solid rgba(248, 113, 113, .2);
+      color: var(--danger);
+    }
+
+    /* ── PAGE HEADER ── */
+    .ml-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: ml-fadeUp .6s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    /* eyebrow — mirrors .sl-sec-tag */
+    .ml-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-family: var(--font-body);
+    }
+
+    .ml-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .ml-head-title {
+      font-family: var(--font-heading);
+      font-size: clamp(30px, 4.5vw, 50px);
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+    }
+
+    /* shimmer italic — mirrors .sl-shimmer */
+    .ml-head-title em {
+      font-style: italic;
+      font-weight: 300;
+      background: linear-gradient(105deg, var(--blue) 25%, var(--cyan) 50%, var(--blue) 75%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: ml-shimmer 4s linear infinite;
+    }
+
+    .ml-head-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 8px;
+      font-weight: 400;
+      line-height: 1.7;
+      font-family: var(--font-body);
+    }
+
+    .ml-head-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* ── BUTTONS — mirrors .sl-btn-primary / .sl-btn-outline ── */
+    .ml-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: transform .22s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s, filter .2s;
+      white-space: nowrap;
+    }
+
+    .ml-btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .ml-btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ml-btn-primary:hover {
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(59, 130, 246, .4);
+      filter: brightness(1.08);
+    }
+
+    .ml-btn-primary:active {
+      transform: scale(.97);
+    }
+
+    .ml-btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .ml-btn-outline:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      transform: translateY(-2px);
+      background: var(--glow-blue);
+    }
+
+    /* ── STATS BAR — mirrors .sl-hero-stats ── */
+    .ml-stats {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(17, 17, 24, .7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      animation: ml-fadeUp .6s .08s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .ml-stat {
+      flex: 1;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      border-right: 1px solid var(--border);
+      transition: background .25s;
+    }
+
+    .ml-stat:last-child {
+      border-right: none;
+    }
+
+    .ml-stat:hover {
+      background: rgba(59, 130, 246, .06);
+    }
+
+    .ml-stat-n {
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1;
+      /* gradient text on numbers */
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .ml-stat-l {
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--font-body);
+      text-align: center;
+    }
+
+    /* ── FILTER BAR ── */
+    .ml-filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      animation: ml-fadeUp .6s .12s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    /* search — mirrors navbar .ss-search-bar */
+    .ml-search-wrap {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .ml-search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      display: flex;
+    }
+
+    .ml-search-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .ml-search {
+      width: 100%;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 11px 16px 11px 40px;
+      font-size: 13px;
+      color: var(--text);
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color .25s, box-shadow .25s, background .25s;
+    }
+
+    .ml-search::placeholder {
+      color: var(--muted);
+    }
+
+    .ml-search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+      background: rgba(255, 255, 255, .06);
+    }
+
+    /* selects */
+    .ml-filter-select {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 11px 32px 11px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--font-body);
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 13px;
+      transition: border-color .2s, color .2s;
+      white-space: nowrap;
+    }
+
+    .ml-filter-select:focus {
+      border-color: var(--blue);
+      color: var(--text);
+    }
+
+    .ml-filter-select option {
+      background: var(--s2);
+    }
+
+    /* count pill — mirrors .sl-count */
+    .ml-count-badge {
+      padding: 9px 16px;
+      background: rgba(59, 130, 246, .08);
+      border: 1px solid rgba(59, 130, 246, .2);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--blue);
+      font-family: var(--font-body);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    /* ── SECTION HEADER — mirrors .sl-sec-hd ── */
+    .ml-sec-hd {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ml-sec-tag {
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+    }
+
+    .ml-sec-tag::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .ml-sec-title {
+      font-family: var(--font-heading);
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.08;
+    }
+
+    .ml-sec-title em {
+      font-style: italic;
+      color: var(--cyan);
+    }
+
+    /* divider — mirrors .sl-sep */
+    .ml-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    }
+
+    /* ── LISTING GRID — mirrors .sl-grid ── */
+    .ml-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      animation: ml-fadeUp .6s .16s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    /* ── LISTING CARD — mirrors .sl-card ── */
+    .ml-card {
+      background: var(--s2);
+      border: 1px solid rgba(255, 255, 255, .04);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color .3s, transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s;
+      animation: ml-scaleIn .5s cubic-bezier(.22, 1, .36, 1) both;
+      color: var(--text);
+    }
+
+    .ml-card:hover {
+      border-color: rgba(59, 130, 246, .3);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(59, 130, 246, .1);
+    }
+
+    /* card image — mirrors .sl-card-img */
+    .ml-card-img {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background: var(--s3);
+    }
+
+    .ml-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .6s cubic-bezier(.25, .46, .45, .94), filter .4s;
+    }
+
+    .ml-card:hover .ml-card-img img {
+      transform: scale(1.07);
+      filter: brightness(1.04);
+    }
+
+    /* gradient overlay */
+    .ml-card-img-ov {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(22, 22, 31, .6) 0%, rgba(22, 22, 31, .1) 40%, transparent 65%);
+    }
+
+    /* category badge — mirrors .sl-badge */
+    .ml-card-cat {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 11px;
+      background: rgba(22, 22, 31, .75);
+      border: 1px solid rgba(59, 130, 246, .25);
+      border-radius: 999px;
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: capitalize;
+      color: var(--blue);
+      font-weight: 500;
+      backdrop-filter: blur(8px);
+      font-family: var(--font-body);
+    }
+
+    /* price chip over image — mirrors .sl-pval style */
+    .ml-card-price {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(22, 22, 31, .82);
+      border: 1px solid rgba(59, 130, 246, .18);
+      border-radius: 10px;
+      padding: 6px 12px;
+      backdrop-filter: blur(10px);
+      font-family: var(--font-heading);
+      font-size: 19px;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .ml-card-price span {
+      font-size: 13px;
+      color: var(--blue);
+    }
+
+    /* card body */
+    .ml-card-body {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* title — mirrors .sl-card-title */
+    .ml-card-title {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* location — mirrors .sl-card-loc */
+    .ml-card-loc {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-family: var(--font-body);
+    }
+
+    .ml-card-loc svg {
+      width: 11px;
+      height: 11px;
+      flex-shrink: 0;
+      color: var(--cyan);
+    }
+
+    /* meta chips — mirrors .sl-tag */
+    .ml-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .ml-card-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 9px;
+      background: rgba(59, 130, 246, .06);
+      border: 1px solid rgba(59, 130, 246, .12);
+      border-radius: 7px;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .04em;
+      font-family: var(--font-body);
+      transition: border-color .2s, color .2s;
+    }
+
+    .ml-card-chip:hover {
+      border-color: rgba(59, 130, 246, .3);
+      color: var(--blue);
+    }
+
+    .ml-card-chip svg {
+      width: 10px;
+      height: 10px;
+      flex-shrink: 0;
+    }
+
+    /* rating chip highlight */
+    .ml-chip-rating {
+      background: rgba(59, 130, 246, .1);
+      border-color: rgba(59, 130, 246, .25);
+      color: var(--blue);
+    }
+
+    /* action buttons row — mirrors .sl-book-btn style */
+    .ml-card-actions {
+      display: flex;
+      gap: 7px;
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      padding-top: 13px;
+      margin-top: auto;
+    }
+
+    .ml-action-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 0;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      font-family: var(--font-body);
+      cursor: pointer;
+      border: 1px solid;
+      background: transparent;
+      transition: background .2s, border-color .2s, color .2s,
+        transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s;
+    }
+
+    .ml-action-btn svg {
+      width: 11px;
+      height: 11px;
+      flex-shrink: 0;
+    }
+
+    .ml-action-btn:active {
+      transform: scale(.96);
+    }
+
+    /* View — blue tint */
+    .ml-action-view {
+      border-color: rgba(59, 130, 246, .2);
+      color: var(--muted);
+    }
+
+    .ml-action-view:hover {
+      background: rgba(59, 130, 246, .1);
+      border-color: rgba(59, 130, 246, .4);
+      color: var(--blue);
+      transform: scale(1.04);
+    }
+
+    /* Edit — cyan tint */
+    .ml-action-edit {
+      border-color: rgba(6, 182, 212, .18);
+      color: var(--muted);
+    }
+
+    .ml-action-edit:hover {
+      background: rgba(6, 182, 212, .08);
+      border-color: rgba(6, 182, 212, .4);
+      color: var(--cyan);
+      transform: scale(1.04);
+    }
+
+    /* Delete — danger */
+    .ml-action-del {
+      border-color: rgba(239, 68, 68, .18);
+      color: var(--muted);
+    }
+
+    .ml-action-del:hover {
+      background: rgba(239, 68, 68, .08);
+      border-color: rgba(239, 68, 68, .4);
+      color: #f87171;
+      transform: scale(1.04);
+    }
+
+    /* ── EMPTY STATE — mirrors .sl-empty ── */
+    .ml-empty {
+      grid-column: 1/-1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .ml-empty-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, .08);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      margin-bottom: 20px;
+      animation: ml-float 3s ease-in-out infinite;
+    }
+
+    .ml-empty-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .ml-empty-title {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--text);
+      margin: 0 0 10px;
+    }
+
+    .ml-empty-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 28px;
+      max-width: 340px;
+      line-height: 1.7;
+      font-family: var(--font-body);
+    }
+
+    /* ── RESPONSIVE ═══════════════════════════════════════════
+   ≥ 900px   3-col grid
+   ≤ 900px   2-col grid
+   ≤ 640px   1-col grid, compact
+   ≤ 480px   very compact
+═══════════════════════════════════════════════════════ */
+    @media (max-width:900px) {
+      .ml-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ml-stats {
+        flex-wrap: wrap;
+      }
+
+      .ml-stat {
+        flex: 1 1 calc(50% - 1px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .ml-stat:nth-child(even) {
+        border-right: none;
+      }
+
+      .ml-stat:nth-last-child(-n+2) {
+        border-bottom: none;
+      }
+    }
+
+    @media (max-width:640px) {
+      .ml-page {
+        padding: 28px 14px 72px;
+      }
+
+      .ml-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .ml-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .ml-head-right {
+        width: 100%;
+      }
+
+      .ml-btn {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .ml-filters {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .ml-search-wrap {
+        width: 100%;
+      }
+
+      .ml-filter-select {
+        width: 100%;
+        border-radius: 10px;
+      }
+
+      .ml-count-badge {
+        width: 100%;
+        text-align: center;
+        border-radius: 10px;
+      }
+
+      .ml-stat {
+        flex: 1 1 100%;
+        border-right: none;
+      }
+
+      .ml-stats {
+        border-radius: 14px;
+      }
+    }
+
+    @media (max-width:480px) {
+      .ml-page {
+        padding: 20px 12px 60px;
+      }
+
+      .ml-card-img {
+        height: 170px;
+      }
+
+      .ml-card-body {
+        padding: 13px 14px 14px;
+      }
+
+      .ml-card-title {
+        font-size: 16px;
+      }
+
+      .ml-stat-n {
+        font-size: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      .ml-head,
+      .ml-stats,
+      .ml-grid,
+      .ml-card,
+      .ml-empty-icon {
+        animation: none !important;
+      }
+
+      .ml-card-img img {
+        transition: none !important;
+      }
+
+      .ml-head-title em {
+        animation: none;
+      }
+
+      .ml-beam {
+        animation: none;
+        display: none;
+      }
+    }
+  </style>
+
+
+  <!-- decorative layers -->
+  <div class="ml-grid-bg" aria-hidden="true"></div>
+  <div class="ml-beam" aria-hidden="true"></div>
+
+  <div class="ml-page">
+    <div class="ml-wrap">
+
+      <!-- ══ FLASH MESSAGES ════════════════════════════════════ -->
+      <% if (success && success.length) { %>
+        <div class="ml-flash ml-flash-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15"
+            height="15">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <%= success %>
+        </div>
+        <% } %>
+          <% if (error && error.length) { %>
+            <div class="ml-flash ml-flash-error">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                width="15" height="15">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none" />
+              </svg>
+              <%= error %>
+            </div>
+            <% } %>
+
+              <!-- ══ PAGE HEADER ════════════════════════════════════════ -->
+              <div class="ml-head">
+                <div class="ml-head-left">
+                  <div class="ml-eyebrow">Your properties</div>
+                  <h1 class="ml-head-title">My <em>listings</em></h1>
+                  <p class="ml-head-sub">Manage, edit and track all your hosted properties.</p>
+                </div>
+                <div class="ml-head-right">
+                  <a href="/menu/profile" class="ml-btn ml-btn-outline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Profile
+                  </a>
+                  <a href="/listings/new" class="ml-btn ml-btn-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    New listing
+                  </a>
+                </div>
+              </div>
+
+              <!-- ══ STATS BAR ══════════════════════════════════════════ -->
+              <% const totalListings=myListings.length; const avgPrice=totalListings> 0
+                ? Math.round(myListings.reduce((s,l) => s + (l.price||0), 0) / totalListings)
+                : 0;
+                const totalReviews = myListings.reduce((s,l) => s + (l.reviews ? l.reviews.length : 0), 0);
+                const ratedListings = myListings.filter(l => l.reviews && l.reviews.length > 0);
+                const avgRating = ratedListings.length > 0
+                ? (ratedListings.reduce((s,l) =>
+                s + l.reviews.reduce((a,r) => a+(r.rating||0),0)/l.reviews.length, 0
+                ) / ratedListings.length).toFixed(1)
+                : null;
+                %>
+                <div class="ml-stats">
+                  <div class="ml-stat">
+                    <span class="ml-stat-n">
+                      <%= totalListings %>
+                    </span>
+                    <span class="ml-stat-l">Total listings</span>
+                  </div>
+                  <div class="ml-stat">
+                    <span class="ml-stat-n">
+                      <%= avgPrice> 0 ? '₹' + avgPrice.toLocaleString('en-IN') : '—' %>
+                    </span>
+                    <span class="ml-stat-l">Avg. price / night</span>
+                  </div>
+                  <div class="ml-stat">
+                    <span class="ml-stat-n">
+                      <%= totalReviews %>
+                    </span>
+                    <span class="ml-stat-l">Total reviews</span>
+                  </div>
+                  <div class="ml-stat">
+                    <span class="ml-stat-n">
+                      <%= avgRating ? avgRating + '★' : '—' %>
+                    </span>
+                    <span class="ml-stat-l">Avg. rating</span>
+                  </div>
+                </div>
+
+                <!-- ══ FILTER BAR ══════════════════════════════════════════ -->
+                <div class="ml-filters">
+                  <div class="ml-search-wrap">
+                    <div class="ml-search-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m21 21-4.35-4.35" />
+                      </svg>
+                    </div>
+                    <input class="ml-search" type="text" id="mlSearch" placeholder="Search your listings…"
+                      autocomplete="off">
+                  </div>
+
+                  <select class="ml-filter-select" id="mlCatFilter">
+                    <option value="">All categories</option>
+                    <option value="villa">Villa</option>
+                    <option value="flat">Flat</option>
+                    <option value="room">Room</option>
+                    <option value="hostel">Hostel</option>
+                    <option value="beachfront">Beach</option>
+                    <option value="mountain">Mountain</option>
+                    <option value="island">Island</option>
+                    <option value="farm">Farm</option>
+                  </select>
+
+                  <select class="ml-filter-select" id="mlSortFilter">
+                    <option value="newest">Newest first</option>
+                    <option value="oldest">Oldest first</option>
+                    <option value="price-high">Price: high → low</option>
+                    <option value="price-low">Price: low → high</option>
+                    <option value="rating">Best rated</option>
+                  </select>
+
+                  <div class="ml-count-badge" id="mlCountBadge">
+                    <%= myListings.length %> listing<%= myListings.length !==1 ? 's' : '' %>
+                  </div>
+                </div>
+
+                <!-- ══ SECTION HEADER ════════════════════════════════════ -->
+                <div class="ml-sec-hd">
+                  <div>
+                    <div class="ml-sec-tag">Properties</div>
+                    <div class="ml-sec-title">Your <em>portfolio</em></div>
+                  </div>
+                </div>
+                <div class="ml-sep"></div>
+
+                <!-- ══ GRID ═══════════════════════════════════════════════ -->
+                <div class="ml-grid" id="mlGrid">
+
+                  <% if (myListings && myListings.length> 0) { %>
+                    <% myListings.forEach(function(listing, idx) { const avgR=listing.reviews && listing.reviews.length>
+                      0
+                      ? (listing.reviews.reduce((s,r) => s+(r.rating||0),0) / listing.reviews.length).toFixed(1)
+                      : null;
+                      %>
+
+                      <div class="ml-card" style="animation-delay:<%= idx * 0.06 %>s"
+                        data-title="<%= listing.title.toLowerCase() %>" data-category="<%= listing.category || '' %>"
+                        data-price="<%= listing.price || 0 %>" data-rating="<%= avgR || 0 %>"
+                        data-date="<%= listing.createdAt ? new Date(listing.createdAt).getTime() : 0 %>">
+
+                        <!-- image -->
+                        <div class="ml-card-img">
+                          <img
+                            src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600' %>"
+                            alt="<%= listing.title %>" loading="lazy">
+                          <div class="ml-card-img-ov"></div>
+                          <% if (listing.category) { %>
+                            <span class="ml-card-cat">
+                              <%= listing.category %>
+                            </span>
+                            <% } %>
+                              <div class="ml-card-price">
+                                <span>₹</span>
+                                <%= listing.price.toLocaleString('en-IN') %>
+                              </div>
+                        </div>
+
+                        <!-- body -->
+                        <div class="ml-card-body">
+
+                          <div class="ml-card-title">
+                            <%= listing.title %>
+                          </div>
+
+                          <div class="ml-card-loc">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                              stroke-linecap="round">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                              <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            <%= listing.location %>, <%= listing.country %>
+                          </div>
+
+                          <!-- chips -->
+                          <div class="ml-card-meta">
+                            <% if (listing.bedrooms) { %>
+                              <span class="ml-card-chip">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                  stroke-linecap="round">
+                                  <path d="M3 7h18v13H3z" />
+                                  <path d="M3 7V4h18v3" />
+                                </svg>
+                                <%= listing.bedrooms %> bed
+                              </span>
+                              <% } %>
+                                <% if (listing.bathrooms) { %>
+                                  <span class="ml-card-chip">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                      stroke-linecap="round">
+                                      <path d="M4 12h16v4a4 4 0 01-4 4H8a4 4 0 01-4-4v-4z" />
+                                      <path d="M6 12V6a2 2 0 012-2h1" />
+                                    </svg>
+                                    <%= listing.bathrooms %> bath
+                                  </span>
+                                  <% } %>
+                                    <span class="ml-card-chip">
+                                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round">
+                                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                                      </svg>
+                                      <%= listing.reviews ? listing.reviews.length : 0 %>
+                                        review<%= (!listing.reviews || listing.reviews.length !==1) ? 's' : '' %>
+                                    </span>
+                                    <% if (avgR) { %>
+                                      <span class="ml-card-chip ml-chip-rating">★ <%= avgR %></span>
+                                      <% } %>
+                          </div>
+
+                          <!-- actions -->
+                          <div class="ml-card-actions">
+                            <a href="/listings/<%= listing._id %>" class="ml-action-btn ml-action-view">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                              </svg>
+                              View
+                            </a>
+                            <a href="/listings/<%= listing._id %>/edit" class="ml-action-btn ml-action-edit">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                              Edit
+                            </a>
+                            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST"
+                              style="flex:1;margin:0;">
+                              <button type="submit" class="ml-action-btn ml-action-del" style="width:100%;"
+                                onclick="return confirm('Delete \'<%= listing.title.replace(/\'/g,`\\'`) %>\'? This cannot be undone.')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round">
+                                  <polyline points="3 6 5 6 21 6" />
+                                  <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                                  <path d="M10 11v6M14 11v6M9 6V4h6v2" />
+                                </svg>
+                                Delete
+                              </button>
+                            </form>
+                          </div>
+
+                        </div><!-- /.ml-card-body -->
+                      </div><!-- /.ml-card -->
+
+                      <% }); %>
+
+                        <% } else { %>
+
+                          <!-- empty state -->
+                          <div class="ml-empty">
+                            <div class="ml-empty-icon">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                                <polyline points="9 22 9 12 15 12 15 22" />
+                              </svg>
+                            </div>
+                            <h4 class="ml-empty-title">No listings yet</h4>
+                            <p class="ml-empty-sub">
+                              You haven't created any listings yet.<br>
+                              Share your property with travellers worldwide.
+                            </p>
+                            <a href="/listings/new" class="ml-btn ml-btn-primary">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round">
+                                <path d="M12 5v14M5 12h14" />
+                              </svg>
+                              Create your first listing
+                            </a>
+                          </div>
+
+                          <% } %>
+
+                            <!-- JS no-results placeholder -->
+                            <div class="ml-empty" id="mlNoResults" style="display:none;grid-column:1/-1;">
+                              <div class="ml-empty-icon" style="animation:none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                  stroke-linecap="round">
+                                  <circle cx="11" cy="11" r="7" />
+                                  <path d="m21 21-4.35-4.35" />
+                                </svg>
+                              </div>
+                              <h4 class="ml-empty-title">No results found</h4>
+                              <p class="ml-empty-sub">Try adjusting your search or filter.</p>
+                            </div>
+
+                </div><!-- /#mlGrid -->
+
+    </div><!-- /.ml-wrap -->
+  </div><!-- /.ml-page -->
+
+
+
+
+  <script>
+    (function () {
+      'use strict';
+
+      var cards = Array.from(document.querySelectorAll('.ml-card'));
+      var searchInp = document.getElementById('mlSearch');
+      var catFilter = document.getElementById('mlCatFilter');
+      var sortFilter = document.getElementById('mlSortFilter');
+      var countBadge = document.getElementById('mlCountBadge');
+      var noResults = document.getElementById('mlNoResults');
+      var grid = document.getElementById('mlGrid');
+
+      function applyFilters() {
+        var q = searchInp ? searchInp.value.trim().toLowerCase() : '';
+        var cat = catFilter ? catFilter.value : '';
+        var srt = sortFilter ? sortFilter.value : 'newest';
+
+        var visible = cards.filter(function (c) {
+          return (!q || c.dataset.title.includes(q))
+            && (!cat || c.dataset.category === cat);
+        });
+
+        visible.sort(function (a, b) {
+          if (srt === 'price-high') return Number(b.dataset.price) - Number(a.dataset.price);
+          if (srt === 'price-low') return Number(a.dataset.price) - Number(b.dataset.price);
+          if (srt === 'rating') return Number(b.dataset.rating) - Number(a.dataset.rating);
+          if (srt === 'oldest') return Number(a.dataset.date) - Number(b.dataset.date);
+          return Number(b.dataset.date) - Number(a.dataset.date); // newest
+        });
+
+        cards.forEach(function (c) { c.style.display = 'none'; });
+        visible.forEach(function (c) { c.style.display = ''; grid.appendChild(c); });
+
+        var n = visible.length;
+        if (countBadge)
+          countBadge.textContent = n + ' listing' + (n !== 1 ? 's' : '');
+        if (noResults)
+          noResults.style.display = n === 0 ? 'flex' : 'none';
+      }
+
+      if (searchInp) searchInp.addEventListener('input', applyFilters);
+      if (catFilter) catFilter.addEventListener('change', applyFilters);
+      if (sortFilter) sortFilter.addEventListener('change', applyFilters);
+
+      /* staggered card entrance */
+      document.querySelectorAll('.ml-card').forEach(function (c, i) {
+        c.style.animationDelay = (i * 0.06) + 's';
+      });
+
+    })();
+  </script>

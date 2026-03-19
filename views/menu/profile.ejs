@@ -1,0 +1,1397 @@
+<% layout("layouts/boilerplate") %>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   PROFILE PAGE — StayScape blue/cyan dark system
+   Tokens from boilerplate:
+     --blue #3B82F6  --cyan #06B6D4
+     --bg #0A0A0F    --s1 #111118   --s2 #16161F  --s3 #1E1E28
+     --text #F0F4FF  --muted #6B7280
+     --border rgba(255,255,255,.07)
+     --glow-blue rgba(59,130,246,.08)
+     --font-heading  --font-body
+     --success #4ADE80  --danger #F87171
+═══════════════════════════════════════════════════════════ */
+
+/* ── KEYFRAMES ── */
+@keyframes pf-fadeUp  { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pf-scaleIn { from{opacity:0;transform:scale(.97)}       to{opacity:1;transform:scale(1)}      }
+@keyframes pf-float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+@keyframes pf-spin    { to{transform:rotate(360deg)} }
+@keyframes pf-shimmer {
+  0%  {background-position:200% center}
+  100%{background-position:-200% center}
+}
+@keyframes pf-beam {
+  0%  {opacity:0;transform:translateX(-100%)}
+  20% {opacity:1}
+  80% {opacity:1}
+  100%{opacity:0;transform:translateX(100%)}
+}
+@keyframes pf-ring-spin {
+  to { transform:rotate(360deg); }
+}
+
+/* ── PAGE SHELL ── */
+.pf-page {
+  min-height:100vh;
+  background:var(--bg);
+  padding:48px 20px 80px;
+  position:relative; overflow:hidden;
+}
+/* glows */
+.pf-page::before {
+  content:''; position:fixed; top:-160px; right:-100px;
+  width:520px; height:520px; border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.07) 0%,transparent 60%);
+  pointer-events:none; z-index:0;
+}
+.pf-page::after {
+  content:''; position:fixed; bottom:-80px; left:-60px;
+  width:360px; height:360px; border-radius:50%;
+  background:radial-gradient(circle,rgba(6,182,212,.04) 0%,transparent 60%);
+  pointer-events:none; z-index:0;
+}
+
+/* dot-grid */
+.pf-grid-bg {
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(59,130,246,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.025) 1px,transparent 1px);
+  background-size:80px 80px;
+}
+
+/* one-shot beam */
+.pf-beam {
+  position:fixed; top:64px; left:0; right:0; height:1px; z-index:2;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 45%,var(--cyan) 55%,transparent 100%);
+  animation:pf-beam 5s ease-in-out .3s both;
+  pointer-events:none;
+}
+
+.pf-wrap {
+  max-width:900px; margin:0 auto;
+  position:relative; z-index:1;
+  display:flex; flex-direction:column; gap:24px;
+}
+
+/* ── FLASH MESSAGES ── */
+.pf-alert {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 16px; border-radius:10px;
+  font-size:13px; font-family:var(--font-body);
+  animation:pf-fadeUp .3s ease both;
+}
+.pf-alert svg { width:14px; height:14px; flex-shrink:0; }
+.pf-alert-success {
+  background:rgba(74,222,128,.07);
+  border:1px solid rgba(74,222,128,.2); color:var(--success);
+}
+.pf-alert-error {
+  background:rgba(248,113,113,.07);
+  border:1px solid rgba(248,113,113,.2); color:var(--danger);
+}
+
+/* ── BANNER — replaces gold diagonal pattern with blue grid ── */
+.pf-banner {
+  position:relative; width:100%; height:180px;
+  border-radius:20px; overflow:hidden;
+  border:1px solid var(--border);
+  animation:pf-fadeUp .5s cubic-bezier(.22,1,.36,1) both;
+}
+.pf-banner-bg {
+  width:100%; height:100%;
+  background:linear-gradient(135deg, var(--bg) 0%, var(--s3) 40%, var(--s2) 70%, var(--bg) 100%);
+  position:relative;
+}
+/* blue dot-grid on banner */
+.pf-banner-pattern {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(59,130,246,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.06) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+/* diagonal accent lines */
+.pf-banner-lines {
+  position:absolute; inset:0; overflow:hidden; pointer-events:none;
+}
+.pf-banner-lines::before {
+  content:''; position:absolute; top:0; left:30%;
+  width:.5px; height:100%;
+  background:linear-gradient(to bottom,transparent,rgba(59,130,246,.08) 30%,rgba(59,130,246,.08) 70%,transparent);
+  transform:rotate(-8deg) translateY(-10%);
+}
+.pf-banner-lines::after {
+  content:''; position:absolute; top:0; right:20%;
+  width:.5px; height:100%;
+  background:linear-gradient(to bottom,transparent,rgba(6,182,212,.05) 40%,rgba(6,182,212,.05) 60%,transparent);
+  transform:rotate(6deg) translateY(-10%);
+}
+.pf-banner-ov {
+  position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(10,10,15,.85) 0%,transparent 60%);
+}
+/* animated beam across banner */
+.pf-banner-beam {
+  position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 45%,var(--cyan) 55%,transparent 100%);
+  animation:pf-beam 6s ease-in-out 1s both;
+}
+.pf-banner-label {
+  position:absolute; top:18px; left:20px;
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--blue); font-weight:600;
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-body);
+}
+.pf-banner-label::before {
+  content:''; display:block;
+  width:20px; height:1px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+}
+
+/* ── IDENTITY BLOCK ── */
+.pf-identity {
+  display:flex; align-items:flex-end; gap:22px;
+  margin-top:-60px; padding:0 4px;
+  animation:pf-fadeUp .55s .1s cubic-bezier(.22,1,.36,1) both;
+}
+.pf-avatar-wrap { position:relative; flex-shrink:0; }
+
+.pf-avatar {
+  width:96px; height:96px; border-radius:50%;
+  background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(6,182,212,.1));
+  border:3px solid var(--bg);
+  box-shadow:0 0 0 1.5px var(--blue), 0 8px 28px rgba(0,0,0,.55);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-heading);
+  font-size:36px; font-weight:300; color:var(--blue);
+  position:relative; overflow:hidden;
+}
+
+/* spinning ring — blue gradient */
+.pf-avatar-ring {
+  position:absolute; inset:-4px; border-radius:50%;
+  border:1.5px solid rgba(59,130,246,.25);
+  border-top-color:var(--blue);
+  animation:pf-ring-spin 8s linear infinite;
+}
+.pf-avatar-status {
+  position:absolute; bottom:4px; right:4px;
+  width:14px; height:14px; border-radius:50%;
+  background:var(--success); border:2px solid var(--bg);
+}
+
+.pf-identity-info { flex:1; padding-bottom:6px; }
+
+.pf-identity-name {
+  font-family:var(--font-heading);
+  font-size:clamp(20px,3.5vw,30px);
+  font-weight:300; color:var(--text); line-height:1.1;
+}
+/* shimmer em */
+.pf-identity-name em {
+  font-style:italic; font-weight:300;
+  background:linear-gradient(105deg,var(--blue) 25%,var(--cyan) 50%,var(--blue) 75%);
+  background-size:200% auto;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:pf-shimmer 4s linear infinite;
+}
+
+.pf-identity-meta {
+  display:flex; align-items:center; gap:14px;
+  margin-top:6px; flex-wrap:wrap;
+}
+.pf-meta-item {
+  display:flex; align-items:center; gap:5px;
+  font-size:12px; color:var(--muted); font-family:var(--font-body);
+}
+.pf-meta-item svg { width:12px; height:12px; color:var(--cyan); flex-shrink:0; }
+
+.pf-identity-actions {
+  display:flex; gap:10px; padding-bottom:6px; flex-wrap:wrap;
+}
+
+/* ── BUTTONS ── */
+.pf-btn {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:10px 20px; border-radius:999px;
+  font-size:12px; font-weight:500; letter-spacing:.04em;
+  font-family:var(--font-body); cursor:pointer;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+  border:1px solid; background:transparent;
+}
+.pf-btn svg { width:13px; height:13px; flex-shrink:0; }
+
+/* primary — mirrors .sl-btn-primary */
+.pf-btn-primary {
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#fff; border-color:transparent;
+}
+.pf-btn-primary:hover {
+  color:#fff; transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(59,130,246,.4); filter:brightness(1.08);
+}
+/* outline — mirrors .sl-btn-outline */
+.pf-btn-outline {
+  border-color:var(--border); color:var(--text);
+}
+.pf-btn-outline:hover {
+  border-color:var(--blue); color:var(--blue);
+  transform:translateY(-1px); background:var(--glow-blue);
+}
+/* danger */
+.pf-btn-danger {
+  border-color:rgba(248,113,113,.28); color:var(--danger);
+}
+.pf-btn-danger:hover {
+  background:rgba(248,113,113,.08); border-color:var(--danger);
+  transform:translateY(-1px);
+}
+
+/* ── STATS BAR — mirrors .sl-hero-stats ── */
+.pf-stats {
+  display:flex; align-items:stretch;
+  border:1px solid var(--border);
+  border-radius:18px; overflow:hidden;
+  background:rgba(17,17,24,.7);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  animation:pf-fadeUp .55s .15s cubic-bezier(.22,1,.36,1) both;
+}
+.pf-stat {
+  flex:1; padding:22px 14px;
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  border-right:1px solid var(--border);
+  transition:background .25s;
+  cursor:default;
+}
+.pf-stat:last-child { border-right:none; }
+.pf-stat:hover { background:rgba(59,130,246,.06); }
+.pf-stat-n {
+  font-family:var(--font-heading);
+  font-size:26px; font-weight:300; line-height:1;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.pf-stat-n.success {
+  background:none; -webkit-text-fill-color:var(--success); color:var(--success);
+}
+.pf-stat-l {
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); font-family:var(--font-body); text-align:center;
+}
+
+/* ── SECTION CARD — mirrors .sl-card ── */
+.pf-card {
+  background:var(--s2);
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:18px; overflow:hidden;
+  animation:pf-scaleIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+.pf-card-head {
+  padding:18px 22px 16px;
+  background:var(--s1);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  position:relative; overflow:hidden;
+}
+/* subtle glow top-right of card header */
+.pf-card-head::before {
+  content:''; position:absolute; top:-30px; right:-30px;
+  width:100px; height:100px; border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.08) 0%,transparent 65%);
+  pointer-events:none;
+}
+/* eyebrow — mirrors .sl-sec-tag */
+.pf-card-eyebrow {
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--blue); font-weight:600;
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-body);
+}
+.pf-card-eyebrow::before {
+  content:''; display:block;
+  width:20px; height:1px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+}
+.pf-card-body { padding:22px; }
+
+/* ── FORM FIELDS ── */
+.pf-field { margin-bottom:16px; }
+.pf-field:last-child { margin-bottom:0; }
+.pf-lbl {
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); font-weight:500; margin-bottom:7px;
+  font-family:var(--font-body);
+}
+.pf-lbl-badge {
+  font-size:9px; letter-spacing:.06em; text-transform:uppercase;
+  color:rgba(59,130,246,.5);
+}
+.pf-input {
+  width:100%;
+  background:var(--s3);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:11px 14px;
+  font-size:14px; color:var(--text); font-family:var(--font-body);
+  outline:none;
+  transition:border-color .22s, box-shadow .22s, background .22s;
+  -webkit-appearance:none;
+}
+.pf-input::placeholder { color:var(--muted); }
+.pf-input:focus {
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(59,130,246,.12);
+  background:rgba(30,30,40,.9);
+}
+.pf-input:hover:not(:focus) { border-color:rgba(59,130,246,.28); }
+.pf-input[readonly] {
+  color:var(--muted); cursor:not-allowed;
+  background:rgba(17,17,24,.6);
+}
+.pf-row2 {
+  display:grid; grid-template-columns:1fr 1fr; gap:14px;
+}
+.pf-pw-wrap { position:relative; }
+.pf-pw-toggle {
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer;
+  color:var(--muted); padding:4px; transition:color .18s;
+}
+.pf-pw-toggle:hover { color:var(--blue); }
+.pf-pw-toggle svg { width:15px; height:15px; }
+
+/* divider inside form */
+.pf-form-divider {
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--border) 20%,var(--border) 80%,transparent);
+  margin:20px 0;
+}
+.pf-form-section-lbl {
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--blue); font-weight:600; margin-bottom:16px;
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-body);
+}
+.pf-form-section-lbl::before {
+  content:''; display:block;
+  width:16px; height:1px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+}
+.pf-form-section-lbl span {
+  font-size:9px; color:var(--muted);
+  text-transform:none; letter-spacing:0; font-weight:400;
+}
+
+/* password strength */
+.pf-pw-strength {
+  margin-top:6px; display:flex; gap:4px; align-items:center;
+}
+.pf-pw-bar {
+  flex:1; height:3px; border-radius:999px;
+  background:rgba(255,255,255,.07); transition:background .3s;
+}
+.pf-pw-label {
+  font-size:10px; color:var(--muted);
+  min-width:40px; text-align:right; font-family:var(--font-body);
+}
+
+/* submit button — mirrors .sl-btn-primary */
+.pf-submit {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; padding:13px 0;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#fff; border:none; border-radius:999px;
+  font-size:13px; font-weight:600; letter-spacing:.05em;
+  font-family:var(--font-body); cursor:pointer;
+  position:relative; overflow:hidden;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+  margin-top:20px;
+}
+.pf-submit:hover {
+  transform:translateY(-2px);
+  box-shadow:0 10px 28px rgba(59,130,246,.4); filter:brightness(1.08);
+}
+.pf-submit:disabled {
+  opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; filter:none;
+}
+.pf-submit svg { width:14px; height:14px; }
+
+/* ── TABS — mirrors category strip style ── */
+.pf-tabs {
+  display:flex;
+  background:var(--s3);
+  border:1px solid var(--border);
+  border-radius:12px; padding:4px; gap:4px;
+  margin-bottom:20px;
+}
+.pf-tab {
+  flex:1; padding:9px 0; text-align:center;
+  border-radius:9px;
+  font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--muted); font-family:var(--font-body);
+  cursor:pointer; border:none; background:transparent;
+  transition:color .2s, background .2s, box-shadow .2s;
+}
+.pf-tab.active {
+  background:rgba(59,130,246,.12);
+  color:var(--blue); font-weight:600;
+  box-shadow:0 0 0 1px rgba(59,130,246,.25);
+}
+
+/* section title inside tabs — mirrors .sl-sec-tag */
+.pf-section-title {
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--blue); font-weight:600;
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:14px; font-family:var(--font-body);
+}
+.pf-section-title::before {
+  content:''; display:block;
+  width:20px; height:1px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+}
+.pf-section-badge {
+  background:rgba(59,130,246,.1);
+  border:1px solid rgba(59,130,246,.2);
+  border-radius:999px; padding:2px 8px;
+  font-size:10px; color:var(--blue);
+}
+
+/* ── LISTING ITEMS in activity tab ── */
+.pf-listing-grid { display:flex; flex-direction:column; gap:10px; }
+.pf-listing-item {
+  display:flex; align-items:center; gap:14px;
+  padding:12px 14px;
+  background:var(--s3);
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:12px;
+  transition:border-color .2s, transform .22s cubic-bezier(.34,1.56,.64,1);
+  color:inherit;
+}
+.pf-listing-item:hover {
+  border-color:rgba(59,130,246,.25); transform:translateY(-2px);
+}
+.pf-listing-thumb {
+  width:56px; height:56px; border-radius:10px;
+  object-fit:cover; flex-shrink:0;
+  background:var(--s2); border:1px solid var(--border);
+}
+.pf-listing-thumb-placeholder {
+  width:56px; height:56px; border-radius:10px; flex-shrink:0;
+  background:rgba(59,130,246,.08);
+  border:1px solid rgba(59,130,246,.15);
+  display:flex; align-items:center; justify-content:center; color:var(--blue);
+}
+.pf-listing-info { flex:1; min-width:0; }
+.pf-listing-name {
+  font-size:13px; font-weight:500; color:var(--text);
+  margin-bottom:3px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-family:var(--font-body);
+}
+.pf-listing-loc {
+  font-size:11px; color:var(--muted);
+  display:flex; align-items:center; gap:4px; font-family:var(--font-body);
+}
+.pf-listing-loc svg { width:10px; height:10px; color:var(--cyan); }
+.pf-listing-price {
+  font-family:var(--font-heading);
+  font-size:16px; font-weight:300; color:var(--text); flex-shrink:0;
+}
+.pf-listing-price span { font-size:12px; color:var(--blue); }
+.pf-listing-actions { display:flex; gap:6px; flex-shrink:0; }
+
+/* small action buttons on listing rows */
+.pf-listing-btn {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:5px 10px; border-radius:999px;
+  font-size:10px; border:1px solid; cursor:pointer;
+  background:transparent; font-family:var(--font-body);
+  transition:background .18s, border-color .18s, color .18s;
+  text-decoration:none;
+}
+.pf-listing-btn svg { width:10px; height:10px; }
+.pf-listing-btn-edit {
+  border-color:rgba(59,130,246,.2); color:var(--muted);
+}
+.pf-listing-btn-edit:hover {
+  background:rgba(59,130,246,.1); border-color:var(--blue); color:var(--blue);
+}
+.pf-listing-btn-view {
+  border-color:rgba(6,182,212,.18); color:var(--muted);
+}
+.pf-listing-btn-view:hover {
+  background:rgba(6,182,212,.08); border-color:var(--cyan); color:var(--cyan);
+}
+
+/* ── BOOKING ITEMS ── */
+.pf-booking-list { display:flex; flex-direction:column; gap:10px; }
+.pf-booking-item {
+  background:var(--s3);
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:12px; overflow:hidden;
+  transition:border-color .2s, transform .22s;
+}
+.pf-booking-item:hover {
+  border-color:rgba(59,130,246,.2); transform:translateY(-2px);
+}
+.pf-booking-head {
+  padding:12px 14px 10px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.pf-booking-title {
+  font-size:13px; font-weight:500; color:var(--text); font-family:var(--font-body);
+}
+.pf-booking-sub {
+  font-size:11px; color:var(--muted); margin-top:2px; font-family:var(--font-body);
+}
+/* status badges — mirrors .sl-badge */
+.pf-booking-status {
+  padding:4px 11px; border-radius:999px;
+  font-size:10px; letter-spacing:.08em; text-transform:uppercase; font-weight:500;
+  flex-shrink:0; font-family:var(--font-body);
+}
+.pf-booking-status.upcoming {
+  background:rgba(16,185,129,.12);
+  border:1px solid rgba(16,185,129,.3); color:#4ade80;
+}
+.pf-booking-status.past {
+  background:rgba(59,130,246,.1);
+  border:1px solid rgba(59,130,246,.25); color:var(--blue);
+}
+.pf-booking-dates {
+  padding:9px 14px 12px;
+  display:flex; align-items:center; gap:8px;
+  border-top:1px solid rgba(255,255,255,.05);
+  font-size:12px; color:var(--muted); font-family:var(--font-body);
+}
+.pf-booking-dates svg { width:12px; height:12px; color:var(--blue); flex-shrink:0; }
+.pf-booking-price {
+  font-family:var(--font-heading);
+  font-size:15px; font-weight:300; color:var(--text); margin-left:auto;
+}
+
+/* ── REVIEW ITEMS ── */
+.pf-review-list { display:flex; flex-direction:column; gap:10px; }
+.pf-review-item {
+  background:var(--s3);
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:12px; padding:14px;
+  transition:border-color .2s;
+}
+.pf-review-item:hover { border-color:rgba(59,130,246,.2); }
+.pf-review-head {
+  display:flex; align-items:center;
+  justify-content:space-between; margin-bottom:8px;
+}
+.pf-review-listing {
+  font-size:12px; color:var(--muted);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-family:var(--font-body);
+}
+.pf-review-listing a { color:var(--blue); }
+.pf-review-stars { display:flex; gap:2px; }
+.pf-review-stars svg { width:11px; height:11px; }
+.pf-review-comment {
+  font-size:13px; color:var(--muted); line-height:1.7;
+  font-family:var(--font-body);
+}
+
+/* ── EMPTY STATE inside tabs — mirrors .sl-empty ── */
+.pf-empty {
+  display:flex; flex-direction:column;
+  align-items:center; padding:32px 20px; text-align:center;
+}
+.pf-empty svg {
+  width:32px; height:32px; color:var(--muted);
+  margin-bottom:12px; animation:pf-float 3s ease-in-out infinite;
+}
+.pf-empty p {
+  font-size:13px; color:var(--muted); font-family:var(--font-body);
+}
+.pf-empty a { color:var(--blue); border-bottom:1px solid rgba(59,130,246,.25); }
+
+/* ── TWO COLUMN LAYOUT ── */
+.pf-cols {
+  display:grid;
+  grid-template-columns:1fr 300px;
+  gap:20px; align-items:start;
+}
+
+/* ── SIDEBAR CARDS ── */
+.pf-info-card {
+  background:var(--s2);
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:18px; padding:20px;
+}
+.pf-info-card-title {
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--blue); font-weight:600; margin-bottom:16px;
+  display:flex; align-items:center; gap:8px; font-family:var(--font-body);
+}
+.pf-info-card-title::before {
+  content:''; display:block;
+  width:16px; height:1px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+}
+/* verified row */
+.pf-verified {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 14px;
+  background:rgba(16,185,129,.06);
+  border:1px solid rgba(16,185,129,.18);
+  border-radius:10px; font-size:11px; color:var(--success);
+  margin-bottom:14px; font-family:var(--font-body);
+}
+.pf-verified svg { width:13px; height:13px; flex-shrink:0; }
+
+/* info rows */
+.pf-info-row {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 0; border-bottom:1px solid var(--border); font-size:12px;
+}
+.pf-info-row:last-child { border-bottom:none; padding-bottom:0; }
+.pf-info-icon {
+  width:30px; height:30px; border-radius:8px;
+  background:rgba(59,130,246,.08);
+  border:1px solid rgba(59,130,246,.15);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--blue); flex-shrink:0;
+}
+.pf-info-icon svg { width:13px; height:13px; }
+.pf-info-key {
+  font-size:10px; color:var(--muted); letter-spacing:.06em;
+  text-transform:uppercase; font-family:var(--font-body);
+}
+.pf-info-val {
+  font-size:13px; color:var(--text); margin-top:1px; font-family:var(--font-body);
+}
+
+/* danger/account actions card */
+.pf-danger-card {
+  background:var(--s2);
+  border:1px solid rgba(248,113,113,.12);
+  border-radius:18px; padding:20px;
+}
+.pf-danger-title {
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--danger); font-weight:600; margin-bottom:12px;
+  display:flex; align-items:center; gap:7px; font-family:var(--font-body);
+}
+.pf-danger-title svg { width:13px; height:13px; }
+.pf-danger-txt {
+  font-size:12px; color:var(--muted); line-height:1.7;
+  margin-bottom:14px; font-family:var(--font-body);
+}
+/* sign-out — mirrors .ss-dropdown-item--danger */
+.pf-signout-btn {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; padding:11px 0;
+  background:transparent;
+  border:1px solid rgba(248,113,113,.22);
+  border-radius:999px;
+  font-size:12px; font-weight:500; color:var(--danger);
+  cursor:pointer; letter-spacing:.04em; font-family:var(--font-body);
+  transition:background .2s, border-color .2s, transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.pf-signout-btn:hover {
+  background:rgba(248,113,113,.08); border-color:var(--danger);
+  transform:translateY(-1px);
+}
+.pf-signout-btn svg { width:13px; height:13px; }
+
+/* sidebar stack */
+.pf-sidebar {
+  display:flex; flex-direction:column; gap:16px;
+  animation:pf-scaleIn .55s .25s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* quick links column buttons */
+.pf-quick-links {
+  display:flex; flex-direction:column; gap:8px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width:760px) {
+  .pf-cols { grid-template-columns:1fr; }
+  .pf-stats { flex-wrap:wrap; border-radius:14px; }
+  .pf-stat  { flex:1 1 calc(50% - 1px); border-bottom:1px solid var(--border); }
+  .pf-stat:nth-child(even) { border-right:none; }
+  .pf-stat:nth-last-child(-n+2) { border-bottom:none; }
+  .pf-identity { flex-direction:column; align-items:flex-start; margin-top:-40px; }
+  .pf-identity-actions { width:100%; }
+  .pf-btn { flex:1; justify-content:center; }
+}
+
+@media (max-width:480px) {
+  .pf-page { padding:0 0 60px; }
+  .pf-wrap { gap:0; }
+  .pf-card { border-radius:0; border-left:none; border-right:none; }
+  .pf-banner { border-radius:0; border-left:none; border-right:none; }
+  .pf-identity { padding:0 14px; }
+  .pf-stats { padding:0 14px; gap:8px; margin:0 14px; border-radius:14px; }
+  .pf-row2 { grid-template-columns:1fr; }
+  .pf-info-card,
+  .pf-danger-card { border-radius:0; border-left:none; border-right:none; }
+}
+
+@media (max-width:380px) {
+  .pf-stat { flex:1 1 100%; border-right:none; }
+  .pf-listing-actions { flex-direction:column; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .pf-banner, .pf-identity, .pf-stats, .pf-card, .pf-sidebar {
+    animation:none !important;
+  }
+  .pf-avatar-ring { animation:none; }
+  .pf-empty svg   { animation:none; }
+  .pf-identity-name em { animation:none; }
+  .pf-beam, .pf-banner-beam { animation:none; display:none; }
+}
+</style>
+
+
+<!-- decorative layers -->
+<div class="pf-grid-bg" aria-hidden="true"></div>
+<div class="pf-beam"    aria-hidden="true"></div>
+
+<div class="pf-page">
+<div class="pf-wrap">
+
+  <!-- ══ FLASH ════════════════════════════════════════════ -->
+  <% if (success && success.length) { %>
+    <div class="pf-alert pf-alert-success">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      <%= success %>
+    </div>
+  <% } %>
+  <% if (error && error.length) { %>
+    <div class="pf-alert pf-alert-error">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
+      </svg>
+      <%= error %>
+    </div>
+  <% } %>
+
+  <!-- ══ BANNER ════════════════════════════════════════════ -->
+  <div class="pf-banner">
+    <div class="pf-banner-bg">
+      <div class="pf-banner-pattern"></div>
+      <div class="pf-banner-lines"></div>
+      <div class="pf-banner-ov"></div>
+      <div class="pf-banner-beam" aria-hidden="true"></div>
+      <div class="pf-banner-label">StayScape Member</div>
+    </div>
+  </div>
+
+  <!-- ══ IDENTITY ══════════════════════════════════════════ -->
+  <div class="pf-identity">
+    <div class="pf-avatar-wrap">
+      <div class="pf-avatar">
+        <%= currUser.username[0].toUpperCase() %>
+        <div class="pf-avatar-ring"></div>
+      </div>
+      <div class="pf-avatar-status" title="Online"></div>
+    </div>
+
+    <div class="pf-identity-info">
+      <div class="pf-identity-name">
+        Welcome, <em><%= currUser.username %></em>
+      </div>
+      <div class="pf-identity-meta">
+        <div class="pf-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <%= currUser.username %>
+        </div>
+        <div class="pf-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <%= currUser.email %>
+        </div>
+        <div class="pf-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8"  y1="2" x2="8"  y2="6"/>
+            <line x1="3"  y1="10" x2="21" y2="10"/>
+          </svg>
+          Member since <%= new Date(currUser.createdAt || Date.now()).toLocaleDateString('en-IN',{month:'long',year:'numeric'}) %>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf-identity-actions">
+      <a href="/listings" class="pf-btn pf-btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        Browse listings
+      </a>
+    </div>
+  </div>
+
+  <!-- ══ STATS BAR ══════════════════════════════════════════ -->
+  <div class="pf-stats">
+    <div class="pf-stat">
+      <span class="pf-stat-n"><%= typeof totalListings !== 'undefined' ? totalListings : 0 %></span>
+      <span class="pf-stat-l">Listings</span>
+    </div>
+    <div class="pf-stat">
+      <span class="pf-stat-n"><%= typeof totalBookings !== 'undefined' ? totalBookings : 0 %></span>
+      <span class="pf-stat-l">Bookings</span>
+    </div>
+    <div class="pf-stat">
+      <span class="pf-stat-n"><%= typeof totalReviews !== 'undefined' ? totalReviews : 0 %></span>
+      <span class="pf-stat-l">Reviews</span>
+    </div>
+    <div class="pf-stat">
+      <span class="pf-stat-n success">✓</span>
+      <span class="pf-stat-l">Verified</span>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY CARD (tabs) ═══════════════════════════════ -->
+  <div class="pf-card" style="animation-delay:.18s;">
+    <div class="pf-card-head">
+      <div class="pf-card-eyebrow">Your activity</div>
+    </div>
+    <div class="pf-card-body">
+
+      <!-- Tabs -->
+      <div class="pf-tabs">
+        <button class="pf-tab active" data-tab="listings">
+          Listings<% if (typeof userListings !== 'undefined' && userListings.length > 0) { %> (<%= userListings.length %>)<% } %>
+        </button>
+        <button class="pf-tab" data-tab="bookings">
+          Bookings<% if (typeof userBookings !== 'undefined' && userBookings.length > 0) { %> (<%= userBookings.length %>)<% } %>
+        </button>
+        <button class="pf-tab" data-tab="reviews">
+          Reviews<% if (typeof userReviews !== 'undefined' && userReviews.length > 0) { %> (<%= userReviews.length %>)<% } %>
+        </button>
+      </div>
+
+      <!-- ── LISTINGS TAB ── -->
+      <div class="pf-tab-panel active" id="tab-listings">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div class="pf-section-title" style="margin-bottom:0;">
+            My listings
+            <span class="pf-section-badge"><%= typeof userListings !== 'undefined' ? userListings.length : 0 %></span>
+          </div>
+          <a href="/listings/new" class="pf-btn pf-btn-primary" style="padding:7px 16px;font-size:11px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="11" height="11">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            New listing
+          </a>
+        </div>
+
+        <% if (typeof userListings !== 'undefined' && userListings.length > 0) { %>
+          <div class="pf-listing-grid">
+            <% userListings.forEach(function(listing) { %>
+              <div class="pf-listing-item">
+                <% if (listing.image && listing.image.url) { %>
+                  <img class="pf-listing-thumb" src="<%= listing.image.url %>" alt="<%= listing.title %>" loading="lazy">
+                <% } else { %>
+                  <div class="pf-listing-thumb-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" width="22" height="22">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    </svg>
+                  </div>
+                <% } %>
+                <div class="pf-listing-info">
+                  <div class="pf-listing-name"><%= listing.title %></div>
+                  <div class="pf-listing-loc">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <%= listing.location %>, <%= listing.country %>
+                  </div>
+                </div>
+                <div class="pf-listing-price">
+                  <span>₹</span><%= listing.price.toLocaleString('en-IN') %>
+                </div>
+                <div class="pf-listing-actions">
+                  <a href="/listings/<%= listing._id %>/edit" class="pf-listing-btn pf-listing-btn-edit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Edit
+                  </a>
+                  <a href="/listings/<%= listing._id %>" class="pf-listing-btn pf-listing-btn-view">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    View
+                  </a>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="pf-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            </svg>
+            <p>No listings yet. <a href="/listings/new">Create your first listing</a></p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- ── BOOKINGS TAB ── -->
+      <div class="pf-tab-panel" id="tab-bookings" style="display:none;">
+        <div class="pf-section-title">
+          My bookings
+          <span class="pf-section-badge"><%= typeof userBookings !== 'undefined' ? userBookings.length : 0 %></span>
+        </div>
+
+        <% if (typeof userBookings !== 'undefined' && userBookings.length > 0) { %>
+          <div class="pf-booking-list">
+            <% userBookings.forEach(function(booking) {
+              const now = new Date();
+              const sd  = new Date(booking.startDate);
+              const ed  = new Date(booking.endDate);
+              const isUpcoming = sd >= now;
+              const nights = Math.round((ed - sd) / (1000*60*60*24));
+              const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            %>
+              <div class="pf-booking-item">
+                <div class="pf-booking-head">
+                  <div>
+                    <div class="pf-booking-title">
+                      <%= booking.listing ? booking.listing.title : 'Listing unavailable' %>
+                    </div>
+                    <div class="pf-booking-sub">
+                      <%= booking.listing ? booking.listing.location + ', ' + booking.listing.country : '' %>
+                    </div>
+                  </div>
+                  <span class="pf-booking-status <%= isUpcoming ? 'upcoming' : 'past' %>">
+                    <%= isUpcoming ? 'Upcoming' : 'Completed' %>
+                  </span>
+                </div>
+                <div class="pf-booking-dates">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8"  y1="2" x2="8"  y2="6"/>
+                    <line x1="3"  y1="10" x2="21" y2="10"/>
+                  </svg>
+                  <%= months[sd.getMonth()] %> <%= sd.getDate() %>, <%= sd.getFullYear() %>
+                  →
+                  <%= months[ed.getMonth()] %> <%= ed.getDate() %>, <%= ed.getFullYear() %>
+                  <span style="color:var(--muted);font-size:11px;">(<%= nights %> night<%= nights !== 1 ? 's' : '' %>)</span>
+                  <% if (booking.totalPrice) { %>
+                    <span class="pf-booking-price">₹<%= booking.totalPrice.toLocaleString('en-IN') %></span>
+                  <% } %>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="pf-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8"  y1="2" x2="8"  y2="6"/>
+              <line x1="3"  y1="10" x2="21" y2="10"/>
+            </svg>
+            <p>No bookings yet. <a href="/listings">Explore listings</a></p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- ── REVIEWS TAB ── -->
+      <div class="pf-tab-panel" id="tab-reviews" style="display:none;">
+        <div class="pf-section-title">
+          My reviews
+          <span class="pf-section-badge"><%= typeof userReviews !== 'undefined' ? userReviews.length : 0 %></span>
+        </div>
+
+        <% if (typeof userReviews !== 'undefined' && userReviews.length > 0) { %>
+          <div class="pf-review-list">
+            <% userReviews.forEach(function(review) { %>
+              <div class="pf-review-item">
+                <div class="pf-review-head">
+                  <div class="pf-review-listing">
+                    <% if (review.listing) { %>
+                      <a href="/listings/<%= review.listing._id %>"><%= review.listing.title %></a>
+                    <% } else { %>
+                      Listing unavailable
+                    <% } %>
+                  </div>
+                  <div class="pf-review-stars">
+                    <% for (let s = 0; s < 5; s++) { %>
+                      <svg viewBox="0 0 24 24"
+                           fill="<%= s < review.rating ? '#3B82F6' : 'rgba(59,130,246,.18)' %>">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    <% } %>
+                  </div>
+                </div>
+                <p class="pf-review-comment"><%= review.comment %></p>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="pf-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+            <p>No reviews yet. Book a stay and share your experience!</p>
+          </div>
+        <% } %>
+      </div>
+
+    </div><!-- /.pf-card-body -->
+  </div><!-- /.pf-card (activity) -->
+
+  <!-- ══ TWO COLUMNS — Edit form + Sidebar ════════════════ -->
+  <div class="pf-cols">
+
+    <!-- LEFT: Edit form -->
+    <div class="pf-card" style="animation-delay:.22s;">
+      <div class="pf-card-head">
+        <div class="pf-card-eyebrow">Edit profile</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+             width="16" height="16" style="color:var(--blue);opacity:.5;">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </div>
+      <div class="pf-card-body">
+        <form action="/menu/profile?_method=PUT" method="POST" id="pfForm" novalidate>
+
+          <div class="pf-row2">
+            <div class="pf-field">
+              <div class="pf-lbl">Username <span class="pf-lbl-badge">Required</span></div>
+              <input class="pf-input" type="text" name="username"
+                     value="<%= currUser.username %>" required minlength="3" maxlength="30">
+            </div>
+            <div class="pf-field">
+              <div class="pf-lbl">Email <span class="pf-lbl-badge">Required</span></div>
+              <input class="pf-input" type="email" name="email"
+                     value="<%= currUser.email %>" required>
+            </div>
+          </div>
+
+          <div class="pf-field">
+            <div class="pf-lbl">Full name <span class="pf-lbl-badge">Optional</span></div>
+            <input class="pf-input" type="text" name="fullName"
+                   value="<%= typeof currUser.fullName !== 'undefined' ? currUser.fullName : '' %>"
+                   placeholder="e.g. Raj Sharma" maxlength="60">
+          </div>
+
+          <div class="pf-field">
+            <div class="pf-lbl">Phone <span class="pf-lbl-badge">Optional</span></div>
+            <input class="pf-input" type="tel" name="phone"
+                   value="<%= typeof currUser.phone !== 'undefined' ? currUser.phone : '' %>"
+                   placeholder="+91 98765 43210" maxlength="15">
+          </div>
+
+          <div class="pf-field">
+            <div class="pf-lbl">Bio <span class="pf-lbl-badge">Optional</span></div>
+            <textarea class="pf-input" name="bio" rows="3" maxlength="200"
+                      placeholder="Tell guests a little about yourself…"
+                      style="resize:none;line-height:1.7;"><%= typeof currUser.bio !== 'undefined' ? currUser.bio : '' %></textarea>
+          </div>
+
+          <div class="pf-form-divider"></div>
+
+          <div class="pf-form-section-lbl">
+            Change password
+            <span>Leave blank to keep current</span>
+          </div>
+
+          <div class="pf-field">
+            <div class="pf-lbl">New password</div>
+            <div class="pf-pw-wrap">
+              <input class="pf-input" type="password" name="password" id="pfPassword"
+                     placeholder="Minimum 6 characters" minlength="6"
+                     style="padding-right:40px;" autocomplete="new-password">
+              <button type="button" class="pf-pw-toggle" id="pfPwToggle" tabindex="-1">
+                <svg id="pfEyeOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg id="pfEyeOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;">
+                  <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+            <div class="pf-pw-strength" id="pfStrength" style="display:none;">
+              <div class="pf-pw-bar" id="pfBar1"></div>
+              <div class="pf-pw-bar" id="pfBar2"></div>
+              <div class="pf-pw-bar" id="pfBar3"></div>
+              <div class="pf-pw-bar" id="pfBar4"></div>
+              <span class="pf-pw-label" id="pfStrengthLbl"></span>
+            </div>
+          </div>
+
+          <div class="pf-field">
+            <div class="pf-lbl">Confirm password</div>
+            <input class="pf-input" type="password" name="confirmPassword" id="pfConfirm"
+                   placeholder="Repeat new password" style="padding-right:40px;"
+                   autocomplete="new-password">
+          </div>
+
+          <button type="submit" class="pf-submit" id="pfSubmit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Save changes
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <div class="pf-sidebar">
+
+      <!-- Account details -->
+      <div class="pf-info-card">
+        <div class="pf-info-card-title">Account details</div>
+        <div class="pf-verified">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11.5 14.5 15.5 9.5"/>
+          </svg>
+          Verified account
+        </div>
+        <div class="pf-info-row">
+          <div class="pf-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="pf-info-key">Username</div>
+            <div class="pf-info-val"><%= currUser.username %></div>
+          </div>
+        </div>
+        <div class="pf-info-row">
+          <div class="pf-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div>
+            <div class="pf-info-key">Email</div>
+            <div class="pf-info-val" style="word-break:break-all;"><%= currUser.email %></div>
+          </div>
+        </div>
+        <div class="pf-info-row">
+          <div class="pf-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8"  y1="2" x2="8"  y2="6"/>
+              <line x1="3"  y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <div>
+            <div class="pf-info-key">Member since</div>
+            <div class="pf-info-val">
+              <%= new Date(currUser.createdAt || Date.now()).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) %>
+            </div>
+          </div>
+        </div>
+        <div class="pf-info-row">
+          <div class="pf-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div>
+            <div class="pf-info-key">Last active</div>
+            <div class="pf-info-val">Just now</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="pf-info-card">
+        <div class="pf-info-card-title">Quick links</div>
+        <div class="pf-quick-links">
+          <a href="/listings/new" class="pf-btn pf-btn-primary" style="justify-content:flex-start;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Create new listing
+          </a>
+          <a href="/listings" class="pf-btn pf-btn-outline" style="justify-content:flex-start;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="11" cy="11" r="7"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            Browse all listings
+          </a>
+          <a href="/menu/mylistings" class="pf-btn pf-btn-outline" style="justify-content:flex-start;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            My listings
+          </a>
+        </div>
+      </div>
+
+      <!-- Account actions -->
+      <div class="pf-danger-card">
+        <div class="pf-danger-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9"  x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Account actions
+        </div>
+        <p class="pf-danger-txt">Sign out of your account on this device.</p>
+        <a href="/logout"
+           onclick="document.getElementById('logoutForm').submit(); return false;"
+           class="pf-signout-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sign out
+        </a>
+      </div>
+
+    </div><!-- /.pf-sidebar -->
+
+  </div><!-- /.pf-cols -->
+
+</div><!-- /.pf-wrap -->
+</div><!-- /.pf-page -->
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Tab switching ── */
+  document.querySelectorAll('.pf-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.pf-tab').forEach(function (t) { t.classList.remove('active'); });
+      document.querySelectorAll('.pf-tab-panel').forEach(function (p) { p.style.display = 'none'; });
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).style.display = 'block';
+    });
+  });
+
+  /* ── Password toggle ── */
+  var pwInp    = document.getElementById('pfPassword');
+  var toggle   = document.getElementById('pfPwToggle');
+  var eyeOn    = document.getElementById('pfEyeOn');
+  var eyeOff   = document.getElementById('pfEyeOff');
+  var strength = document.getElementById('pfStrength');
+  var bars     = ['pfBar1','pfBar2','pfBar3','pfBar4'].map(function (id) { return document.getElementById(id); });
+  var lbl      = document.getElementById('pfStrengthLbl');
+
+  if (toggle && pwInp) {
+    toggle.addEventListener('click', function () {
+      var show = pwInp.type === 'password';
+      pwInp.type = show ? 'text' : 'password';
+      eyeOn.style.display  = show ? 'none' : '';
+      eyeOff.style.display = show ? ''     : 'none';
+    });
+  }
+
+  /* ── Password strength ── */
+  if (pwInp) {
+    pwInp.addEventListener('input', function () {
+      var v = this.value;
+      if (!v) { strength.style.display = 'none'; return; }
+      strength.style.display = 'flex';
+      var score = 0;
+      if (v.length >= 6)  score++;
+      if (v.length >= 10) score++;
+      if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+      if (/[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v)) score++;
+      var colors = ['#F87171','#FBBF24','#34D399','#4ADE80'];
+      var labels = ['Weak','Fair','Good','Strong'];
+      bars.forEach(function (b, i) {
+        b.style.background = i < score ? colors[score - 1] : 'rgba(255,255,255,.07)';
+      });
+      lbl.textContent  = labels[score - 1] || '';
+      lbl.style.color  = colors[score - 1] || 'var(--muted)';
+    });
+  }
+
+  /* ── Confirm password ── */
+  var confirm = document.getElementById('pfConfirm');
+  if (confirm && pwInp) {
+    confirm.addEventListener('input', function () {
+      if (this.value && this.value !== pwInp.value)
+        this.style.borderColor = 'rgba(248,113,113,.5)';
+      else if (this.value)
+        this.style.borderColor = 'rgba(74,222,128,.35)';
+      else
+        this.style.borderColor = '';
+    });
+  }
+
+  /* ── Submit validation ── */
+  var form   = document.getElementById('pfForm');
+  var submit = document.getElementById('pfSubmit');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      var pw  = document.getElementById('pfPassword').value;
+      var cfm = document.getElementById('pfConfirm').value;
+      if (pw && pw !== cfm) {
+        e.preventDefault();
+        document.getElementById('pfConfirm').style.borderColor = 'rgba(248,113,113,.5)';
+        document.getElementById('pfConfirm').focus();
+        return;
+      }
+      if (!form.checkValidity()) {
+        e.preventDefault(); e.stopPropagation();
+        return;
+      }
+      if (submit) {
+        submit.disabled = true;
+        submit.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14" style="animation:pf-spin .8s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg> Saving…';
+      }
+    });
+  }
+
+  /* ── Input blur validation ── */
+  document.querySelectorAll('.pf-input:not([readonly])').forEach(function (inp) {
+    inp.addEventListener('blur', function () {
+      if (this.value.trim() && this.checkValidity())
+        this.style.borderColor = 'rgba(74,222,128,.35)';
+      else if (this.required && !this.value.trim())
+        this.style.borderColor = 'rgba(248,113,113,.4)';
+    });
+    inp.addEventListener('focus', function () { this.style.borderColor = ''; });
+  });
+
+})();
+</script>

@@ -1,0 +1,1057 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   SIGNUP — StayScape blue/cyan dark system
+   Tokens from boilerplate:
+     --blue #3B82F6  --cyan #06B6D4  --bg #0A0A0F
+     --s1 #111118    --s2 #16161F    --s3 #1E1E28
+     --text #F0F4FF  --muted #6B7280 --border rgba(255,255,255,.07)
+     --glow-blue rgba(59,130,246,.08)
+     --font-heading  --font-body 'Inter'
+     --danger #F87171  --success #4ADE80
+═══════════════════════════════════════════════════════════ */
+
+/* ── KEYFRAMES ── */
+@keyframes sp-fadeUp   { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+@keyframes sp-floatOrb { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-18px) scale(1.03)} }
+@keyframes sp-spin     { to{transform:rotate(360deg)} }
+@keyframes sp-slideIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes sp-beam {
+  0%  { opacity:0; transform:translateX(-100%); }
+  20% { opacity:1; }
+  80% { opacity:1; }
+  100%{ opacity:0; transform:translateX(100%);  }
+}
+@keyframes sp-shimmer {
+  0%   { background-position:200% center; }
+  100% { background-position:-200% center; }
+}
+@keyframes sp-checkPop {
+  0%  { transform:scale(0); }
+  70% { transform:scale(1.2); }
+  100%{ transform:scale(1); }
+}
+
+/* ── PAGE ── */
+.sp-page {
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px 20px;
+  position:relative; overflow:hidden;
+  background:var(--bg);
+}
+
+/* decorative glows — mirrors index hero */
+.sp-orb {
+  position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+}
+.sp-orb-1 {
+  top:-160px; right:-100px; width:500px; height:500px;
+  background:radial-gradient(circle,rgba(59,130,246,.07) 0%,transparent 60%);
+  animation:sp-floatOrb 9s ease-in-out infinite;
+}
+.sp-orb-2 {
+  bottom:-100px; left:-80px; width:380px; height:380px;
+  background:radial-gradient(circle,rgba(6,182,212,.04) 0%,transparent 60%);
+  animation:sp-floatOrb 12s ease-in-out 3s infinite;
+}
+
+/* dot-grid */
+.sp-grid {
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(59,130,246,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.025) 1px,transparent 1px);
+  background-size:80px 80px;
+}
+
+/* ── CARD ── */
+.sp-card {
+  position:relative; z-index:1;
+  width:100%; max-width:440px;
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:24px; overflow:hidden;
+  animation:sp-fadeUp .65s cubic-bezier(.22,1,.36,1) both;
+  box-shadow:0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(59,130,246,.05);
+}
+
+/* top beam — mirrors .sl-hero-beam */
+.sp-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:1px; z-index:2;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 45%,var(--cyan) 55%,transparent 100%);
+  animation:sp-beam 5s ease-in-out 1s both;
+}
+
+/* ── HEADER ── */
+.sp-head {
+  padding:32px 36px 24px; text-align:center;
+  background:var(--s1);
+  border-bottom:1px solid var(--border);
+  position:relative; overflow:hidden;
+}
+.sp-head::after {
+  content:'';
+  position:absolute; top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+
+/* logo — matches navbar brand exactly */
+.sp-logo {
+  display:inline-flex; align-items:center; gap:10px; margin-bottom:16px;
+}
+.sp-logo-icon {
+  width:40px; height:40px; border-radius:50%;
+  background:rgba(59,130,246,.1);
+  border:1px solid rgba(59,130,246,.25);
+  display:flex; align-items:center; justify-content:center;
+}
+.sp-logo-icon svg { width:22px; height:22px; display:block; }
+.sp-logo-text {
+  font-family:var(--font-body);
+  font-size:20px; font-weight:700; color:var(--text); letter-spacing:.01em;
+}
+.sp-logo-text em { font-style:normal; color:var(--blue); }
+
+/* title + shimmer italic */
+.sp-head-title {
+  font-family:var(--font-heading);
+  font-size:clamp(22px,4vw,28px);
+  font-weight:300; color:var(--text);
+  margin-bottom:4px; letter-spacing:-.02em;
+}
+.sp-head-title em {
+  font-style:italic; font-weight:300;
+  background:linear-gradient(105deg,var(--blue) 25%,var(--cyan) 50%,var(--blue) 75%);
+  background-size:200% auto;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:sp-shimmer 4s linear infinite;
+}
+.sp-head-sub {
+  font-size:12px; color:var(--muted);
+  font-weight:400; font-family:var(--font-body);
+}
+
+/* ── STEP INDICATORS ── */
+.sp-steps {
+  display:flex; align-items:center; justify-content:center; margin-top:22px;
+}
+.sp-step { display:flex; flex-direction:column; align-items:center; gap:5px; }
+
+.sp-step-circle {
+  width:32px; height:32px; border-radius:50%;
+  background:var(--s3); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; color:var(--muted); font-weight:500;
+  font-family:var(--font-body);
+  transition:all .35s cubic-bezier(.34,1.56,.64,1);
+}
+/* active step — blue ring */
+.sp-step.active .sp-step-circle {
+  background:rgba(59,130,246,.12);
+  border-color:var(--blue);
+  color:var(--blue);
+  box-shadow:0 0 0 4px rgba(59,130,246,.12);
+}
+/* done step — green */
+.sp-step.done .sp-step-circle {
+  background:rgba(74,222,128,.1);
+  border-color:rgba(74,222,128,.35);
+  color:var(--success);
+}
+.sp-step-lbl {
+  font-size:9px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); font-family:var(--font-body);
+  transition:color .3s;
+}
+.sp-step.active .sp-step-lbl { color:var(--blue); }
+.sp-step.done   .sp-step-lbl { color:rgba(74,222,128,.7); }
+
+.sp-step-line {
+  width:56px; height:1px;
+  background:var(--border);
+  margin:0 6px; margin-bottom:18px;
+  transition:background .4s;
+}
+.sp-step-line.done {
+  background:linear-gradient(90deg,rgba(74,222,128,.35),rgba(59,130,246,.35));
+}
+
+/* ── BODY ── */
+.sp-body { padding:28px 36px 32px; }
+.sp-panel { display:none; animation:sp-slideIn .3s ease both; }
+.sp-panel.active { display:block; }
+
+/* ── ALERTS ── */
+.sp-alert {
+  display:none; align-items:center; gap:8px;
+  padding:10px 14px; border-radius:10px;
+  font-size:12px; margin-bottom:16px;
+  font-family:var(--font-body);
+  animation:sp-slideIn .25s ease both;
+}
+.sp-alert.show { display:flex; }
+.sp-alert.err {
+  background:rgba(248,113,113,.08);
+  border:1px solid rgba(248,113,113,.25);
+  color:var(--danger);
+}
+.sp-alert.ok {
+  background:rgba(74,222,128,.07);
+  border:1px solid rgba(74,222,128,.2);
+  color:var(--success);
+}
+.sp-alert svg { width:13px; height:13px; flex-shrink:0; }
+
+/* ── FORM FIELDS ── */
+.sp-field { margin-bottom:16px; }
+.sp-lbl {
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:7px;
+  display:flex; justify-content:space-between;
+  font-family:var(--font-body);
+}
+.sp-lbl-hint {
+  font-size:10px; text-transform:none;
+  letter-spacing:0; color:var(--muted);
+}
+
+/* input wrap — mirrors navbar search bar */
+.sp-input-wrap {
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex; align-items:center; overflow:hidden;
+  transition:border-color .22s, box-shadow .22s, background .22s;
+}
+.sp-input-wrap:hover {
+  border-color:rgba(59,130,246,.3);
+  background:rgba(255,255,255,.05);
+}
+.sp-input-wrap:focus-within {
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(59,130,246,.12);
+  background:rgba(255,255,255,.05);
+}
+.sp-input-wrap:focus-within .sp-icon { color:var(--blue); }
+.sp-input-wrap.valid   { border-color:rgba(74,222,128,.35); }
+.sp-input-wrap.invalid { border-color:rgba(248,113,113,.35); }
+
+.sp-icon {
+  width:46px; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); flex-shrink:0; transition:color .2s;
+}
+.sp-icon svg { width:15px; height:15px; }
+
+.sp-input {
+  flex:1; background:transparent; border:none; outline:none;
+  padding:13px 14px 13px 0;
+  font-size:14px; color:var(--text); font-family:var(--font-body);
+}
+.sp-input::placeholder { color:var(--muted); }
+
+.sp-eye {
+  width:42px; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); cursor:pointer; flex-shrink:0; transition:color .2s;
+}
+.sp-eye svg { width:15px; height:15px; }
+.sp-eye:hover { color:var(--blue); }
+
+/* inline validation hints */
+.sp-hint {
+  font-size:11px; margin-top:5px; padding:0 4px;
+  display:none; font-family:var(--font-body);
+}
+.sp-hint.show { display:block; }
+.sp-hint.err  { color:var(--danger); }
+.sp-hint.ok   { color:var(--success); }
+
+/* OTP large input */
+.sp-otp-big {
+  text-align:center; letter-spacing:12px;
+  font-size:26px; font-family:var(--font-heading); font-weight:300;
+}
+
+/* ── PASSWORD STRENGTH ── */
+.sp-strength { margin-top:8px; display:none; }
+.sp-strength.show { display:block; }
+.sp-strength-bar {
+  display:flex; gap:4px; margin-bottom:4px;
+}
+.sp-strength-seg {
+  flex:1; height:3px; border-radius:999px;
+  background:rgba(255,255,255,.08);
+  transition:background .3s;
+}
+.sp-strength-lbl {
+  font-size:10px; color:var(--muted);
+  letter-spacing:.06em; font-family:var(--font-body);
+}
+
+/* ── TERMS ── */
+.sp-terms {
+  display:flex; align-items:flex-start; gap:10px; margin-bottom:20px;
+}
+.sp-checkbox {
+  width:18px; height:18px; border-radius:5px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex-shrink:0; margin-top:1px;
+  transition:background .2s, border-color .2s;
+}
+.sp-checkbox.checked {
+  background:rgba(59,130,246,.12);
+  border-color:var(--blue);
+}
+.sp-checkbox svg { width:10px; height:10px; color:var(--blue); display:none; }
+.sp-checkbox.checked svg { display:block; animation:sp-checkPop .2s ease both; }
+.sp-terms input[type=checkbox] { display:none; }
+.sp-terms-txt {
+  font-size:12px; color:var(--muted); line-height:1.6;
+  font-family:var(--font-body);
+}
+.sp-terms-txt a {
+  color:var(--blue);
+  border-bottom:1px solid rgba(59,130,246,.25);
+  transition:color .2s;
+}
+.sp-terms-txt a:hover { color:var(--cyan); }
+
+/* ── BUTTONS — mirrors .sl-btn-primary ── */
+.sp-btn {
+  width:100%; padding:14px 0;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#fff; border:none; border-radius:999px;
+  font-size:14px; font-weight:600; letter-spacing:.04em;
+  font-family:var(--font-body); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+}
+.sp-btn:hover {
+  transform:translateY(-3px);
+  box-shadow:0 10px 28px rgba(59,130,246,.4);
+  filter:brightness(1.08);
+}
+.sp-btn:active  { transform:scale(.97); box-shadow:none; }
+.sp-btn:disabled {
+  opacity:.5; cursor:not-allowed;
+  transform:none; box-shadow:none; filter:none;
+}
+
+/* ── DIVIDER ── */
+.sp-divider {
+  display:flex; align-items:center; gap:12px; margin:20px 0;
+  font-size:11px; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase;
+  font-family:var(--font-body);
+}
+.sp-divider::before,
+.sp-divider::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+}
+
+/* Google button — mirrors .sl-btn-outline */
+.sp-social {
+  width:100%; display:flex; align-items:center;
+  justify-content:center; gap:10px;
+  padding:12px 0;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border); border-radius:12px;
+  font-size:13px; color:var(--muted);
+  font-family:var(--font-body); text-decoration:none;
+  transition:border-color .2s, color .2s, background .2s,
+             transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+.sp-social:hover {
+  border-color:rgba(59,130,246,.3);
+  color:var(--text);
+  background:rgba(59,130,246,.05);
+  transform:translateY(-1px);
+}
+
+/* footer link */
+.sp-footer-txt {
+  text-align:center; margin-top:20px;
+  font-size:13px; color:var(--muted); font-family:var(--font-body);
+}
+.sp-footer-txt a {
+  color:var(--blue); font-weight:600;
+  border-bottom:1px solid rgba(59,130,246,.25);
+  padding-bottom:1px; transition:color .2s, border-color .2s;
+}
+.sp-footer-txt a:hover { color:var(--cyan); border-color:var(--cyan); }
+
+/* back/resend inline links */
+.sp-back-link {
+  color:var(--blue); cursor:pointer;
+  transition:color .2s; font-family:var(--font-body);
+}
+.sp-back-link:hover { color:var(--cyan); }
+.sp-resend {
+  text-align:center; margin-top:12px;
+  font-size:12px; color:var(--muted); font-family:var(--font-body);
+}
+.sp-resend .sp-back-link { font-weight:500; }
+
+/* OTP email highlight */
+.sp-otp-email {
+  color:var(--blue); font-weight:500; font-family:var(--font-body);
+}
+
+/* ── PERKS BAR — mirrors .sl-trust-ribbon ── */
+.sp-perks {
+  display:flex; align-items:center; justify-content:center; gap:16px;
+  padding:14px 36px 20px;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;
+  background:var(--s1);
+}
+.sp-perk {
+  display:flex; align-items:center; gap:5px;
+  font-size:10px; color:var(--muted); letter-spacing:.06em;
+  font-family:var(--font-body);
+}
+.sp-perk svg { width:12px; height:12px; color:var(--cyan); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:480px) {
+  .sp-page { padding:0; }
+  .sp-card {
+    border-radius:0; min-height:100vh;
+    border:none; max-width:100%;
+    box-shadow:none; animation:none;
+  }
+  .sp-head  { padding:28px 20px 22px; }
+  .sp-body  { padding:22px 20px 26px; }
+  .sp-perks { padding:14px 20px 20px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .sp-orb-1, .sp-orb-2 { animation:none; }
+  .sp-card::before      { animation:none; }
+  .sp-head-title em     { animation:none; }
+  .sp-card              { animation:none; }
+}
+</style>
+
+
+<div class="sp-page">
+  <div class="sp-orb sp-orb-1" aria-hidden="true"></div>
+  <div class="sp-orb sp-orb-2" aria-hidden="true"></div>
+  <div class="sp-grid"         aria-hidden="true"></div>
+
+  <div class="sp-card">
+
+    <!-- ══ HEADER ════════════════════════════════════════ -->
+    <div class="sp-head">
+      <div class="sp-logo">
+        <div class="sp-logo-icon">
+          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2L25 8.5V19.5L14 26L3 19.5V8.5L14 2Z" fill="#3B82F6" opacity="0.18"/>
+            <path d="M14 2L25 8.5V19.5L14 26L3 19.5V8.5L14 2Z" stroke="#3B82F6" stroke-width="1.2"/>
+            <path d="M9 16.5C9 13.46 11.24 11 14 11C16.76 11 19 13.46 19 16.5"
+                  stroke="#06B6D4" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="14" cy="10" r="1.8" fill="#3B82F6"/>
+          </svg>
+        </div>
+        <span class="sp-logo-text">Stay<em>Scape</em></span>
+      </div>
+      <h1 class="sp-head-title" id="headTitle">Start your <em>journey</em></h1>
+      <p class="sp-head-sub"    id="headSub">Create your free account in seconds</p>
+
+      <!-- step indicators -->
+      <div class="sp-steps">
+        <div class="sp-step active" id="step1">
+          <div class="sp-step-circle">1</div>
+          <span class="sp-step-lbl">Details</span>
+        </div>
+        <div class="sp-step-line" id="line1"></div>
+        <div class="sp-step" id="step2">
+          <div class="sp-step-circle">2</div>
+          <span class="sp-step-lbl">OTP</span>
+        </div>
+        <div class="sp-step-line" id="line2"></div>
+        <div class="sp-step" id="step3">
+          <div class="sp-step-circle">3</div>
+          <span class="sp-step-lbl">Password</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ BODY ═══════════════════════════════════════════ -->
+    <div class="sp-body">
+
+      <!-- server flash messages -->
+      <% if (error && error.length > 0) { %>
+        <div class="sp-alert err show">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
+          </svg>
+          <span><%= error[0] %></span>
+        </div>
+      <% } %>
+      <% if (success && success.length > 0) { %>
+        <div class="sp-alert ok show">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="9 12 11.5 14.5 15.5 9.5"/>
+          </svg>
+          <span><%= success[0] %></span>
+        </div>
+      <% } %>
+
+      <!-- JS alert (dynamic) -->
+      <div class="sp-alert" id="jsAlert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
+        </svg>
+        <span id="jsAlertTxt"></span>
+      </div>
+
+      <!-- ══ STEP 1: DETAILS ══ -->
+      <div class="sp-panel active" id="panel1">
+
+        <div class="sp-field">
+          <div class="sp-lbl">
+            Username <span class="sp-lbl-hint">3–20 chars</span>
+          </div>
+          <div class="sp-input-wrap" id="wrap-username">
+            <span class="sp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </span>
+            <input class="sp-input" type="text" id="inp-username"
+                   placeholder="Choose a username" autocomplete="username">
+          </div>
+          <div class="sp-hint" id="hint-username"></div>
+        </div>
+
+        <div class="sp-field">
+          <div class="sp-lbl">Email address</div>
+          <div class="sp-input-wrap" id="wrap-email">
+            <span class="sp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </span>
+            <input class="sp-input" type="email" id="inp-email"
+                   placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="sp-hint" id="hint-email"></div>
+        </div>
+
+        <button class="sp-btn" id="btn1" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" width="15" height="15">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Send OTP
+        </button>
+
+        <div class="sp-divider">or</div>
+
+        <a href="/auth/google" class="sp-social">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Continue with Google
+        </a>
+
+        <p class="sp-footer-txt">Already have an account? <a href="/login">Sign in</a></p>
+      </div>
+
+      <!-- ══ STEP 2: OTP ══ -->
+      <div class="sp-panel" id="panel2">
+        <p style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:5px;font-family:var(--font-body);">
+          Code sent to
+        </p>
+        <p style="text-align:center;font-size:15px;margin-bottom:20px;font-family:var(--font-body);"
+           id="otpEmailDisplay" class="sp-otp-email"></p>
+
+        <div class="sp-field">
+          <div class="sp-lbl">6-digit verification code</div>
+          <div class="sp-input-wrap" id="wrap-otp">
+            <span class="sp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+            </span>
+            <input class="sp-input sp-otp-big" type="text" id="inp-otp"
+                   placeholder="• • • • • •" maxlength="6"
+                   inputmode="numeric" autocomplete="one-time-code">
+          </div>
+        </div>
+
+        <button class="sp-btn" id="btn2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" width="15" height="15">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Verify OTP
+        </button>
+
+        <div class="sp-resend">
+          Didn't receive it?
+          <span class="sp-back-link" id="resendBtn">Resend</span>
+          <span id="resendTimer" style="display:none;color:var(--muted)"></span>
+        </div>
+
+        <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted);font-family:var(--font-body);">
+          Wrong email?
+          <span class="sp-back-link" id="backBtn1">Go back</span>
+        </p>
+      </div>
+
+      <!-- ══ STEP 3: PASSWORD ══ -->
+      <div class="sp-panel" id="panel3">
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px;font-family:var(--font-body);">
+          Almost there! Set a password for
+          <strong class="sp-otp-email" id="passEmailDisplay"></strong>
+        </p>
+
+        <div class="sp-field">
+          <div class="sp-lbl">
+            Password <span class="sp-lbl-hint">Min. 6 characters</span>
+          </div>
+          <div class="sp-input-wrap" id="wrap-password">
+            <span class="sp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+            </span>
+            <input class="sp-input" type="password" id="inp-password"
+                   placeholder="Create a strong password" autocomplete="new-password">
+            <span class="sp-eye" id="eyeToggle" role="button" aria-label="Toggle password">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </span>
+          </div>
+          <!-- strength meter -->
+          <div class="sp-strength" id="strengthMeter">
+            <div class="sp-strength-bar">
+              <div class="sp-strength-seg" id="seg1"></div>
+              <div class="sp-strength-seg" id="seg2"></div>
+              <div class="sp-strength-seg" id="seg3"></div>
+              <div class="sp-strength-seg" id="seg4"></div>
+            </div>
+            <span class="sp-strength-lbl" id="strengthLbl"></span>
+          </div>
+          <div class="sp-hint" id="hint-password"></div>
+        </div>
+
+        <!-- Terms -->
+        <div class="sp-terms">
+          <div class="sp-checkbox" id="termsBox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <input type="checkbox" id="termsCheck">
+          <label class="sp-terms-txt" for="termsCheck">
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button class="sp-btn" id="btn3" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" width="15" height="15">
+            <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+          Create my account
+        </button>
+
+        <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted);font-family:var(--font-body);">
+          <span class="sp-back-link" id="backBtn2">← Change email</span>
+        </p>
+      </div>
+
+    </div><!-- /.sp-body -->
+
+    <!-- ══ PERKS BAR ══════════════════════════════════════ -->
+    <div class="sp-perks">
+      <div class="sp-perk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Free forever
+      </div>
+      <div class="sp-perk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="9 12 11.5 14.5 15.5 9.5"/>
+        </svg>
+        Instant access
+      </div>
+      <div class="sp-perk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round">
+          <rect x="1" y="4" width="22" height="16" rx="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+        No credit card
+      </div>
+    </div>
+
+  </div><!-- /.sp-card -->
+</div><!-- /.sp-page -->
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── State ── */
+  var state = { username:'', email:'', otpVerified:false };
+  var resendInterval = null;
+
+  /* ── Alert ── */
+  var alertBox = document.getElementById('jsAlert');
+  var alertTxt = document.getElementById('jsAlertTxt');
+  function showAlert(msg, type) {
+    alertTxt.textContent = msg;
+    alertBox.className = 'sp-alert show ' + (type || 'err');
+  }
+  function hideAlert() { alertBox.classList.remove('show'); }
+
+  /* ── Step navigation ── */
+  var headTitles = [
+    'Start your <em>journey</em>',
+    'Verify your <em>email</em>',
+    'Set your <em>password</em>'
+  ];
+  var headSubs = [
+    'Create your free account in seconds',
+    'Enter the code we sent to your inbox',
+    'One last step — secure your account'
+  ];
+
+  function goStep(n) {
+    [1,2,3].forEach(function (i) {
+      document.getElementById('panel'+i).classList.toggle('active', i === n);
+    });
+    [1,2,3].forEach(function (i) {
+      var s      = document.getElementById('step'+i);
+      var circle = s.querySelector('.sp-step-circle');
+      s.classList.remove('active','done');
+      if (i < n) {
+        s.classList.add('done');
+        circle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>';
+      } else {
+        if (i === n) s.classList.add('active');
+        circle.textContent = i;
+      }
+    });
+    [1,2].forEach(function (i) {
+      document.getElementById('line'+i).classList.toggle('done', i < n);
+    });
+    document.getElementById('headTitle').innerHTML = headTitles[n-1];
+    document.getElementById('headSub').textContent = headSubs[n-1];
+    hideAlert();
+  }
+
+  /* ── Step 1 validation ── */
+  var inpUsername = document.getElementById('inp-username');
+  var inpEmail    = document.getElementById('inp-email');
+  var btn1        = document.getElementById('btn1');
+
+  function validateField(inp, wrapId, hintId, validateFn) {
+    var res  = validateFn(inp.value.trim());
+    var wrap = document.getElementById(wrapId);
+    var hint = document.getElementById(hintId);
+    wrap.classList.toggle('valid',   res.ok);
+    wrap.classList.toggle('invalid', !res.ok);
+    hint.textContent = res.msg;
+    hint.className   = 'sp-hint show ' + (res.ok ? 'ok' : 'err');
+    return res.ok;
+  }
+
+  function validateUsername(v) {
+    if (!v)           return { ok:false, msg:'Username is required' };
+    if (v.length < 3) return { ok:false, msg:'At least 3 characters' };
+    if (v.length > 20)return { ok:false, msg:'Max 20 characters' };
+    if (!/^[a-zA-Z0-9_]+$/.test(v)) return { ok:false, msg:'Letters, numbers, underscores only' };
+    return { ok:true, msg:'Looks good!' };
+  }
+  function validateEmail(v) {
+    if (!v) return { ok:false, msg:'Email is required' };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return { ok:false, msg:'Enter a valid email' };
+    return { ok:true, msg:'Valid email' };
+  }
+
+  function checkStep1() {
+    btn1.disabled = !(
+      validateUsername(inpUsername.value.trim()).ok &&
+      validateEmail(inpEmail.value.trim()).ok
+    );
+  }
+
+  inpUsername.addEventListener('input', checkStep1);
+  inpEmail.addEventListener('input',    checkStep1);
+  inpUsername.addEventListener('blur', function () {
+    validateField(this, 'wrap-username', 'hint-username', validateUsername);
+  });
+  inpEmail.addEventListener('blur', function () {
+    validateField(this, 'wrap-email', 'hint-email', validateEmail);
+  });
+
+  /* ── Step 1 → Send OTP ── */
+  var btn1Default = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send OTP';
+  var spinnerHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="15" height="15" style="animation:sp-spin .8s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg>';
+
+  btn1.addEventListener('click', async function () {
+    var uOk = validateField(inpUsername, 'wrap-username', 'hint-username', validateUsername);
+    var eOk = validateField(inpEmail,    'wrap-email',    'hint-email',    validateEmail);
+    if (!uOk || !eOk) return;
+
+    state.username = inpUsername.value.trim();
+    state.email    = inpEmail.value.trim();
+
+    btn1.disabled  = true;
+    btn1.innerHTML = spinnerHtml + 'Sending OTP\u2026';
+
+    try {
+      var res  = await fetch('/send-otp', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ email:state.email })
+      });
+      var data = await res.json();
+      if (data.success) {
+        document.getElementById('otpEmailDisplay').textContent = state.email;
+        goStep(2);
+        startResendTimer(60);
+      } else {
+        showAlert(data.message || 'Failed to send OTP');
+        btn1.disabled  = false;
+        btn1.innerHTML = btn1Default;
+      }
+    } catch (e) {
+      showAlert('Something went wrong. Please try again.');
+      btn1.disabled  = false;
+      btn1.innerHTML = btn1Default;
+    }
+  });
+
+  /* ── Step 2: OTP ── */
+  var inpOtp     = document.getElementById('inp-otp');
+  var btn2       = document.getElementById('btn2');
+  var btn2Default = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Verify OTP';
+
+  async function verifyOtp() {
+    var otp = inpOtp.value.trim();
+    if (otp.length !== 6) { showAlert('Enter the 6-digit code'); return; }
+
+    btn2.disabled  = true;
+    btn2.innerHTML = spinnerHtml + 'Verifying\u2026';
+
+    try {
+      var res  = await fetch('/verify-otp', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ email:state.email, otp:otp })
+      });
+      var data = await res.json();
+      if (data.success) {
+        state.otpVerified = true;
+        document.getElementById('passEmailDisplay').textContent = state.email;
+        goStep(3);
+      } else {
+        showAlert(data.message || 'Invalid OTP');
+        btn2.disabled  = false;
+        btn2.innerHTML = btn2Default;
+        document.getElementById('wrap-otp').classList.add('invalid');
+      }
+    } catch (e) {
+      showAlert('Something went wrong. Please try again.');
+      btn2.disabled  = false;
+      btn2.innerHTML = btn2Default;
+    }
+  }
+
+  btn2.addEventListener('click', verifyOtp);
+  inpOtp.addEventListener('input', function () {
+    if (this.value.length === 6) verifyOtp();
+  });
+
+  /* Resend timer */
+  function startResendTimer(seconds) {
+    var rBtn   = document.getElementById('resendBtn');
+    var rTimer = document.getElementById('resendTimer');
+    var rem = seconds;
+    rBtn.style.display   = 'none';
+    rTimer.style.display = 'inline';
+    clearInterval(resendInterval);
+    resendInterval = setInterval(function () {
+      rem--;
+      rTimer.textContent = 'Resend in ' + rem + 's';
+      if (rem <= 0) {
+        clearInterval(resendInterval);
+        rBtn.style.display   = 'inline';
+        rTimer.style.display = 'none';
+      }
+    }, 1000);
+  }
+
+  document.getElementById('resendBtn').addEventListener('click', async function () {
+    this.style.display = 'none';
+    showAlert('Sending new OTP\u2026', 'ok');
+    try {
+      var res  = await fetch('/send-otp', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ email:state.email })
+      });
+      var data = await res.json();
+      if (data.success) {
+        showAlert('New OTP sent!', 'ok');
+        inpOtp.value = '';
+        startResendTimer(60);
+      } else {
+        showAlert(data.message || 'Failed to resend');
+        this.style.display = 'inline';
+      }
+    } catch (e) {
+      showAlert('Failed to resend');
+      this.style.display = 'inline';
+    }
+  });
+
+  /* Back buttons */
+  document.getElementById('backBtn1').addEventListener('click', function () {
+    clearInterval(resendInterval);
+    inpOtp.value = '';
+    goStep(1);
+    btn1.disabled  = false;
+    btn1.innerHTML = btn1Default;
+  });
+  document.getElementById('backBtn2').addEventListener('click', function () {
+    state.otpVerified = false;
+    goStep(1);
+    btn1.disabled  = false;
+    btn1.innerHTML = btn1Default;
+  });
+
+  /* ── Step 3: Password ── */
+  var inpPass = document.getElementById('inp-password');
+  var btn3    = document.getElementById('btn3');
+  var eye     = document.getElementById('eyeToggle');
+  var eyeIcon = document.getElementById('eyeIcon');
+  var eyeOpen = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  var eyeOff  = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  var COLORS  = ['rgba(248,113,113,.7)','#FBBF24','#34D399','#4ADE80'];
+  var LABELS  = ['Weak','Fair','Good','Strong'];
+  var termsOk = false;
+
+  eye.addEventListener('click', function () {
+    var showing = inpPass.type === 'text';
+    inpPass.type = showing ? 'password' : 'text';
+    eyeIcon.innerHTML = showing ? eyeOpen : eyeOff;
+  });
+
+  function getStrength(v) {
+    if (!v) return 0;
+    var s = 0;
+    if (v.length >= 8)           s++;
+    if (/[A-Z]/.test(v))         s++;
+    if (/[0-9]/.test(v))         s++;
+    if (/[^A-Za-z0-9]/.test(v))  s++;
+    return Math.min(4, Math.max(v.length >= 6 ? 1 : 0, s));
+  }
+
+  function updateStrength(v) {
+    var meter = document.getElementById('strengthMeter');
+    var lbl   = document.getElementById('strengthLbl');
+    if (!v) { meter.classList.remove('show'); return; }
+    meter.classList.add('show');
+    var s = getStrength(v);
+    [1,2,3,4].forEach(function (i) {
+      document.getElementById('seg'+i).style.background =
+        i <= s ? COLORS[s-1] : 'rgba(255,255,255,.08)';
+    });
+    lbl.textContent = s > 0 ? LABELS[s-1] + ' password' : 'Too short';
+    lbl.style.color = s > 0 ? COLORS[s-1] : 'var(--muted)';
+  }
+
+  function checkStep3() {
+    btn3.disabled = !(inpPass.value.length >= 6 && termsOk);
+  }
+
+  inpPass.addEventListener('input', function () {
+    updateStrength(this.value);
+    var hint = document.getElementById('hint-password');
+    var wrap = document.getElementById('wrap-password');
+    if (this.value.length < 6) {
+      wrap.classList.remove('valid'); wrap.classList.add('invalid');
+      hint.textContent = 'At least 6 characters'; hint.className = 'sp-hint show err';
+    } else {
+      wrap.classList.remove('invalid'); wrap.classList.add('valid');
+      hint.textContent = 'Password set'; hint.className = 'sp-hint show ok';
+    }
+    checkStep3();
+  });
+
+  var termsBox   = document.getElementById('termsBox');
+  var termsCheck = document.getElementById('termsCheck');
+  termsBox.addEventListener('click', function () {
+    termsOk = !termsOk;
+    termsCheck.checked = termsOk;
+    termsBox.classList.toggle('checked', termsOk);
+    checkStep3();
+  });
+
+  /* Step 3 → Final submit */
+  btn3.addEventListener('click', async function () {
+    if (!state.otpVerified) { showAlert('Please verify your email first'); return; }
+    var password = inpPass.value;
+    if (password.length < 6) { showAlert('Password must be at least 6 characters'); return; }
+
+    btn3.disabled  = true;
+    btn3.innerHTML = spinnerHtml + 'Creating account\u2026';
+
+    var f = document.createElement('form');
+    f.method = 'POST';
+    f.action = '/signup';
+    [['username',state.username],['email',state.email],['password',password]].forEach(function (pair) {
+      var i = document.createElement('input');
+      i.type = 'hidden'; i.name = pair[0]; i.value = pair[1];
+      f.appendChild(i);
+    });
+    document.body.appendChild(f);
+    f.submit();
+  });
+
+})();
+</script>
