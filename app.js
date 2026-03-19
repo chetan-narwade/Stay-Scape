@@ -10,7 +10,7 @@ const session    = require("express-session");
 const flash      = require("connect-flash");
 const passport   = require("passport");
 
-const ExpressError  = require("./utils/expressError");
+const ExpressError  = require("./utils/ExpressError");
 
 const reviewRoutes   = require("./router/review");
 const listingRoutes  = require("./router/listing");

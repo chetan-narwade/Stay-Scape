@@ -3,7 +3,7 @@ const Listing     = require("./models/listing");
 const Review      = require("./models/review");
 const Booking     = require("./models/booking");
 const { listingSchema, reviewSchema } = require("./schema");
-const ExpressError = require("./utils/expressError");
+const ExpressError = require("./utils/ExpressError");
 
 // ─────────────────────────────────────────────────────────
 //  isLoggedIn

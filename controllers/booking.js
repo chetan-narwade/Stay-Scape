@@ -1,4 +1,4 @@
-const ExpressError = require("../utils/expressError");
+const ExpressError = require("../utils/ExpressError");
 const Booking      = require("../models/booking");
 const Listing      = require("../models/listing");
 

@@ -2,7 +2,7 @@ const axios = require("axios");
 const Listing = require("../models/listing");
 const Booking = require("../models/booking");
 const wrapAsync = require("../utils/wrapAsync");
-const ExpressError = require("../utils/expressError");
+const ExpressError = require("../utils/ExpressError");
 
 const VALID_CATEGORIES = new Set([
     "villa", "flat", "room", "hostel",
