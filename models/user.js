@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
         trim:      true
     },
     wishlist: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:  'Listing',
+        type:    mongoose.Schema.Types.ObjectId,
+        ref:     'Listing',
         default: []
     }]
 
