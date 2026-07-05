@@ -87,7 +87,7 @@
 
 /* ── HEADER ── */
 .sp-head {
-  padding:32px 36px 24px; text-align:center;
+  padding:32px 36px 26px; text-align:center;
   background:var(--s1);
   border-bottom:1px solid var(--border);
   position:relative; overflow:hidden;
@@ -137,55 +137,8 @@
   font-weight:400; font-family:var(--font-body);
 }
 
-/* ── STEP INDICATORS ── */
-.sp-steps {
-  display:flex; align-items:center; justify-content:center; margin-top:22px;
-}
-.sp-step { display:flex; flex-direction:column; align-items:center; gap:5px; }
-
-.sp-step-circle {
-  width:32px; height:32px; border-radius:50%;
-  background:var(--s3); border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-size:12px; color:var(--muted); font-weight:500;
-  font-family:var(--font-body);
-  transition:all .35s cubic-bezier(.34,1.56,.64,1);
-}
-/* active step — blue ring */
-.sp-step.active .sp-step-circle {
-  background:rgba(59,130,246,.12);
-  border-color:var(--blue);
-  color:var(--blue);
-  box-shadow:0 0 0 4px rgba(59,130,246,.12);
-}
-/* done step — green */
-.sp-step.done .sp-step-circle {
-  background:rgba(74,222,128,.1);
-  border-color:rgba(74,222,128,.35);
-  color:var(--success);
-}
-.sp-step-lbl {
-  font-size:9px; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--muted); font-family:var(--font-body);
-  transition:color .3s;
-}
-.sp-step.active .sp-step-lbl { color:var(--blue); }
-.sp-step.done   .sp-step-lbl { color:rgba(74,222,128,.7); }
-
-.sp-step-line {
-  width:56px; height:1px;
-  background:var(--border);
-  margin:0 6px; margin-bottom:18px;
-  transition:background .4s;
-}
-.sp-step-line.done {
-  background:linear-gradient(90deg,rgba(74,222,128,.35),rgba(59,130,246,.35));
-}
-
 /* ── BODY ── */
 .sp-body { padding:28px 36px 32px; }
-.sp-panel { display:none; animation:sp-slideIn .3s ease both; }
-.sp-panel.active { display:block; }
 
 /* ── ALERTS ── */
 .sp-alert {
@@ -271,12 +224,6 @@
 .sp-hint.err  { color:var(--danger); }
 .sp-hint.ok   { color:var(--success); }
 
-/* OTP large input */
-.sp-otp-big {
-  text-align:center; letter-spacing:12px;
-  font-size:26px; font-family:var(--font-heading); font-weight:300;
-}
-
 /* ── PASSWORD STRENGTH ── */
 .sp-strength { margin-top:8px; display:none; }
 .sp-strength.show { display:block; }
@@ -344,38 +291,6 @@
   transform:none; box-shadow:none; filter:none;
 }
 
-/* ── DIVIDER ── */
-.sp-divider {
-  display:flex; align-items:center; gap:12px; margin:20px 0;
-  font-size:11px; color:var(--muted);
-  letter-spacing:.06em; text-transform:uppercase;
-  font-family:var(--font-body);
-}
-.sp-divider::before,
-.sp-divider::after {
-  content:''; flex:1; height:1px;
-  background:linear-gradient(90deg,transparent,var(--border),transparent);
-}
-
-/* Google button — mirrors .sl-btn-outline */
-.sp-social {
-  width:100%; display:flex; align-items:center;
-  justify-content:center; gap:10px;
-  padding:12px 0;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border); border-radius:12px;
-  font-size:13px; color:var(--muted);
-  font-family:var(--font-body); text-decoration:none;
-  transition:border-color .2s, color .2s, background .2s,
-             transform .22s cubic-bezier(.34,1.56,.64,1);
-}
-.sp-social:hover {
-  border-color:rgba(59,130,246,.3);
-  color:var(--text);
-  background:rgba(59,130,246,.05);
-  transform:translateY(-1px);
-}
-
 /* footer link */
 .sp-footer-txt {
   text-align:center; margin-top:20px;
@@ -387,23 +302,6 @@
   padding-bottom:1px; transition:color .2s, border-color .2s;
 }
 .sp-footer-txt a:hover { color:var(--cyan); border-color:var(--cyan); }
-
-/* back/resend inline links */
-.sp-back-link {
-  color:var(--blue); cursor:pointer;
-  transition:color .2s; font-family:var(--font-body);
-}
-.sp-back-link:hover { color:var(--cyan); }
-.sp-resend {
-  text-align:center; margin-top:12px;
-  font-size:12px; color:var(--muted); font-family:var(--font-body);
-}
-.sp-resend .sp-back-link { font-weight:500; }
-
-/* OTP email highlight */
-.sp-otp-email {
-  color:var(--blue); font-weight:500; font-family:var(--font-body);
-}
 
 /* ── PERKS BAR — mirrors .sl-trust-ribbon ── */
 .sp-perks {
@@ -463,26 +361,8 @@
         </div>
         <span class="sp-logo-text">Stay<em>Scape</em></span>
       </div>
-      <h1 class="sp-head-title" id="headTitle">Start your <em>journey</em></h1>
-      <p class="sp-head-sub"    id="headSub">Create your free account in seconds</p>
-
-      <!-- step indicators -->
-      <div class="sp-steps">
-        <div class="sp-step active" id="step1">
-          <div class="sp-step-circle">1</div>
-          <span class="sp-step-lbl">Details</span>
-        </div>
-        <div class="sp-step-line" id="line1"></div>
-        <div class="sp-step" id="step2">
-          <div class="sp-step-circle">2</div>
-          <span class="sp-step-lbl">OTP</span>
-        </div>
-        <div class="sp-step-line" id="line2"></div>
-        <div class="sp-step" id="step3">
-          <div class="sp-step-circle">3</div>
-          <span class="sp-step-lbl">Password</span>
-        </div>
-      </div>
+      <h1 class="sp-head-title">Start your <em>journey</em></h1>
+      <p class="sp-head-sub">Create your free account in seconds</p>
     </div>
 
     <!-- ══ BODY ═══════════════════════════════════════════ -->
@@ -509,18 +389,7 @@
         </div>
       <% } %>
 
-      <!-- JS alert (dynamic) -->
-      <div class="sp-alert" id="jsAlert">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
-        </svg>
-        <span id="jsAlertTxt"></span>
-      </div>
-
-      <!-- ══ STEP 1: DETAILS ══ -->
-      <div class="sp-panel active" id="panel1">
+      <form action="/signup" method="POST" id="signupForm">
 
         <div class="sp-field">
           <div class="sp-lbl">
@@ -534,8 +403,8 @@
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
               </svg>
             </span>
-            <input class="sp-input" type="text" id="inp-username"
-                   placeholder="Choose a username" autocomplete="username">
+            <input class="sp-input" type="text" id="inp-username" name="username"
+                   placeholder="Choose a username" autocomplete="username" required>
           </div>
           <div class="sp-hint" id="hint-username"></div>
         </div>
@@ -550,90 +419,15 @@
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
             </span>
-            <input class="sp-input" type="email" id="inp-email"
-                   placeholder="you@example.com" autocomplete="email">
+            <input class="sp-input" type="email" id="inp-email" name="email"
+                   placeholder="you@example.com" autocomplete="email" required>
           </div>
           <div class="sp-hint" id="hint-email"></div>
         </div>
 
-        <button class="sp-btn" id="btn1" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" width="15" height="15">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-          Send OTP
-        </button>
-
-        <div class="sp-divider">or</div>
-
-        <a href="/auth/google" class="sp-social">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-          </svg>
-          Continue with Google
-        </a>
-
-        <p class="sp-footer-txt">Already have an account? <a href="/login">Sign in</a></p>
-      </div>
-
-      <!-- ══ STEP 2: OTP ══ -->
-      <div class="sp-panel" id="panel2">
-        <p style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:5px;font-family:var(--font-body);">
-          Code sent to
-        </p>
-        <p style="text-align:center;font-size:15px;margin-bottom:20px;font-family:var(--font-body);"
-           id="otpEmailDisplay" class="sp-otp-email"></p>
-
-        <div class="sp-field">
-          <div class="sp-lbl">6-digit verification code</div>
-          <div class="sp-input-wrap" id="wrap-otp">
-            <span class="sp-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                   stroke-width="1.8" stroke-linecap="round">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
-            </span>
-            <input class="sp-input sp-otp-big" type="text" id="inp-otp"
-                   placeholder="• • • • • •" maxlength="6"
-                   inputmode="numeric" autocomplete="one-time-code">
-          </div>
-        </div>
-
-        <button class="sp-btn" id="btn2">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" width="15" height="15">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          Verify OTP
-        </button>
-
-        <div class="sp-resend">
-          Didn't receive it?
-          <span class="sp-back-link" id="resendBtn">Resend</span>
-          <span id="resendTimer" style="display:none;color:var(--muted)"></span>
-        </div>
-
-        <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted);font-family:var(--font-body);">
-          Wrong email?
-          <span class="sp-back-link" id="backBtn1">Go back</span>
-        </p>
-      </div>
-
-      <!-- ══ STEP 3: PASSWORD ══ -->
-      <div class="sp-panel" id="panel3">
-        <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px;font-family:var(--font-body);">
-          Almost there! Set a password for
-          <strong class="sp-otp-email" id="passEmailDisplay"></strong>
-        </p>
-
         <div class="sp-field">
           <div class="sp-lbl">
-            Password <span class="sp-lbl-hint">Min. 6 characters</span>
+            Password <span class="sp-lbl-hint">8+ chars, upper, number, symbol</span>
           </div>
           <div class="sp-input-wrap" id="wrap-password">
             <span class="sp-icon">
@@ -643,8 +437,8 @@
                 <path d="M7 11V7a5 5 0 0110 0v4"/>
               </svg>
             </span>
-            <input class="sp-input" type="password" id="inp-password"
-                   placeholder="Create a strong password" autocomplete="new-password">
+            <input class="sp-input" type="password" id="inp-password" name="password"
+                   placeholder="Create a strong password" autocomplete="new-password" required>
             <span class="sp-eye" id="eyeToggle" role="button" aria-label="Toggle password">
               <svg id="eyeIcon" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -680,7 +474,7 @@
           </label>
         </div>
 
-        <button class="sp-btn" id="btn3" disabled>
+        <button type="submit" class="sp-btn" id="signupBtn" disabled>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" width="15" height="15">
             <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
@@ -691,10 +485,9 @@
           Create my account
         </button>
 
-        <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted);font-family:var(--font-body);">
-          <span class="sp-back-link" id="backBtn2">← Change email</span>
-        </p>
-      </div>
+      </form>
+
+      <p class="sp-footer-txt">Already have an account? <a href="/login">Sign in</a></p>
 
     </div><!-- /.sp-body -->
 
@@ -733,60 +526,15 @@
 (function () {
   'use strict';
 
-  /* ── State ── */
-  var state = { username:'', email:'', otpVerified:false };
-  var resendInterval = null;
-
-  /* ── Alert ── */
-  var alertBox = document.getElementById('jsAlert');
-  var alertTxt = document.getElementById('jsAlertTxt');
-  function showAlert(msg, type) {
-    alertTxt.textContent = msg;
-    alertBox.className = 'sp-alert show ' + (type || 'err');
-  }
-  function hideAlert() { alertBox.classList.remove('show'); }
-
-  /* ── Step navigation ── */
-  var headTitles = [
-    'Start your <em>journey</em>',
-    'Verify your <em>email</em>',
-    'Set your <em>password</em>'
-  ];
-  var headSubs = [
-    'Create your free account in seconds',
-    'Enter the code we sent to your inbox',
-    'One last step — secure your account'
-  ];
-
-  function goStep(n) {
-    [1,2,3].forEach(function (i) {
-      document.getElementById('panel'+i).classList.toggle('active', i === n);
-    });
-    [1,2,3].forEach(function (i) {
-      var s      = document.getElementById('step'+i);
-      var circle = s.querySelector('.sp-step-circle');
-      s.classList.remove('active','done');
-      if (i < n) {
-        s.classList.add('done');
-        circle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>';
-      } else {
-        if (i === n) s.classList.add('active');
-        circle.textContent = i;
-      }
-    });
-    [1,2].forEach(function (i) {
-      document.getElementById('line'+i).classList.toggle('done', i < n);
-    });
-    document.getElementById('headTitle').innerHTML = headTitles[n-1];
-    document.getElementById('headSub').textContent = headSubs[n-1];
-    hideAlert();
-  }
-
-  /* ── Step 1 validation ── */
   var inpUsername = document.getElementById('inp-username');
   var inpEmail    = document.getElementById('inp-email');
-  var btn1        = document.getElementById('btn1');
+  var inpPass     = document.getElementById('inp-password');
+  var signupBtn   = document.getElementById('signupBtn');
+  var termsBox    = document.getElementById('termsBox');
+  var termsCheck  = document.getElementById('termsCheck');
+  var termsOk     = false;
 
+  /* ── Field validation ── */
   function validateField(inp, wrapId, hintId, validateFn) {
     var res  = validateFn(inp.value.trim());
     var wrap = document.getElementById(wrapId);
@@ -799,9 +547,9 @@
   }
 
   function validateUsername(v) {
-    if (!v)           return { ok:false, msg:'Username is required' };
-    if (v.length < 3) return { ok:false, msg:'At least 3 characters' };
-    if (v.length > 20)return { ok:false, msg:'Max 20 characters' };
+    if (!v)            return { ok:false, msg:'Username is required' };
+    if (v.length < 3)  return { ok:false, msg:'At least 3 characters' };
+    if (v.length > 20) return { ok:false, msg:'Max 20 characters' };
     if (!/^[a-zA-Z0-9_]+$/.test(v)) return { ok:false, msg:'Letters, numbers, underscores only' };
     return { ok:true, msg:'Looks good!' };
   }
@@ -810,184 +558,25 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return { ok:false, msg:'Enter a valid email' };
     return { ok:true, msg:'Valid email' };
   }
-
-  function checkStep1() {
-    btn1.disabled = !(
-      validateUsername(inpUsername.value.trim()).ok &&
-      validateEmail(inpEmail.value.trim()).ok
-    );
+  function validatePassword(v) {
+    if (!v || v.length < 8) return { ok:false, msg:'At least 8 characters' };
+    if (!/[A-Z]/.test(v))   return { ok:false, msg:'Add an uppercase letter' };
+    if (!/[0-9]/.test(v))   return { ok:false, msg:'Add a number' };
+    if (!/[^A-Za-z0-9]/.test(v)) return { ok:false, msg:'Add a special character' };
+    return { ok:true, msg:'Strong password' };
   }
 
-  inpUsername.addEventListener('input', checkStep1);
-  inpEmail.addEventListener('input',    checkStep1);
-  inpUsername.addEventListener('blur', function () {
-    validateField(this, 'wrap-username', 'hint-username', validateUsername);
-  });
-  inpEmail.addEventListener('blur', function () {
-    validateField(this, 'wrap-email', 'hint-email', validateEmail);
-  });
-
-  /* ── Step 1 → Send OTP ── */
-  var btn1Default = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send OTP';
-  var spinnerHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="15" height="15" style="animation:sp-spin .8s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg>';
-
-  btn1.addEventListener('click', async function () {
-    var uOk = validateField(inpUsername, 'wrap-username', 'hint-username', validateUsername);
-    var eOk = validateField(inpEmail,    'wrap-email',    'hint-email',    validateEmail);
-    if (!uOk || !eOk) return;
-
-    state.username = inpUsername.value.trim();
-    state.email    = inpEmail.value.trim();
-
-    btn1.disabled  = true;
-    btn1.innerHTML = spinnerHtml + 'Sending OTP\u2026';
-
-    try {
-      var res  = await fetch('/send-otp', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ email:state.email })
-      });
-      var data = await res.json();
-      if (data.success) {
-        document.getElementById('otpEmailDisplay').textContent = state.email;
-        goStep(2);
-        startResendTimer(60);
-      } else {
-        showAlert(data.message || 'Failed to send OTP');
-        btn1.disabled  = false;
-        btn1.innerHTML = btn1Default;
-      }
-    } catch (e) {
-      showAlert('Something went wrong. Please try again.');
-      btn1.disabled  = false;
-      btn1.innerHTML = btn1Default;
-    }
-  });
-
-  /* ── Step 2: OTP ── */
-  var inpOtp     = document.getElementById('inp-otp');
-  var btn2       = document.getElementById('btn2');
-  var btn2Default = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Verify OTP';
-
-  async function verifyOtp() {
-    var otp = inpOtp.value.trim();
-    if (otp.length !== 6) { showAlert('Enter the 6-digit code'); return; }
-
-    btn2.disabled  = true;
-    btn2.innerHTML = spinnerHtml + 'Verifying\u2026';
-
-    try {
-      var res  = await fetch('/verify-otp', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ email:state.email, otp:otp })
-      });
-      var data = await res.json();
-      if (data.success) {
-        state.otpVerified = true;
-        document.getElementById('passEmailDisplay').textContent = state.email;
-        goStep(3);
-      } else {
-        showAlert(data.message || 'Invalid OTP');
-        btn2.disabled  = false;
-        btn2.innerHTML = btn2Default;
-        document.getElementById('wrap-otp').classList.add('invalid');
-      }
-    } catch (e) {
-      showAlert('Something went wrong. Please try again.');
-      btn2.disabled  = false;
-      btn2.innerHTML = btn2Default;
-    }
-  }
-
-  btn2.addEventListener('click', verifyOtp);
-  inpOtp.addEventListener('input', function () {
-    if (this.value.length === 6) verifyOtp();
-  });
-
-  /* Resend timer */
-  function startResendTimer(seconds) {
-    var rBtn   = document.getElementById('resendBtn');
-    var rTimer = document.getElementById('resendTimer');
-    var rem = seconds;
-    rBtn.style.display   = 'none';
-    rTimer.style.display = 'inline';
-    clearInterval(resendInterval);
-    resendInterval = setInterval(function () {
-      rem--;
-      rTimer.textContent = 'Resend in ' + rem + 's';
-      if (rem <= 0) {
-        clearInterval(resendInterval);
-        rBtn.style.display   = 'inline';
-        rTimer.style.display = 'none';
-      }
-    }, 1000);
-  }
-
-  document.getElementById('resendBtn').addEventListener('click', async function () {
-    this.style.display = 'none';
-    showAlert('Sending new OTP\u2026', 'ok');
-    try {
-      var res  = await fetch('/send-otp', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ email:state.email })
-      });
-      var data = await res.json();
-      if (data.success) {
-        showAlert('New OTP sent!', 'ok');
-        inpOtp.value = '';
-        startResendTimer(60);
-      } else {
-        showAlert(data.message || 'Failed to resend');
-        this.style.display = 'inline';
-      }
-    } catch (e) {
-      showAlert('Failed to resend');
-      this.style.display = 'inline';
-    }
-  });
-
-  /* Back buttons */
-  document.getElementById('backBtn1').addEventListener('click', function () {
-    clearInterval(resendInterval);
-    inpOtp.value = '';
-    goStep(1);
-    btn1.disabled  = false;
-    btn1.innerHTML = btn1Default;
-  });
-  document.getElementById('backBtn2').addEventListener('click', function () {
-    state.otpVerified = false;
-    goStep(1);
-    btn1.disabled  = false;
-    btn1.innerHTML = btn1Default;
-  });
-
-  /* ── Step 3: Password ── */
-  var inpPass = document.getElementById('inp-password');
-  var btn3    = document.getElementById('btn3');
-  var eye     = document.getElementById('eyeToggle');
-  var eyeIcon = document.getElementById('eyeIcon');
-  var eyeOpen = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-  var eyeOff  = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
-  var COLORS  = ['rgba(248,113,113,.7)','#FBBF24','#34D399','#4ADE80'];
-  var LABELS  = ['Weak','Fair','Good','Strong'];
-  var termsOk = false;
-
-  eye.addEventListener('click', function () {
-    var showing = inpPass.type === 'text';
-    inpPass.type = showing ? 'password' : 'text';
-    eyeIcon.innerHTML = showing ? eyeOpen : eyeOff;
-  });
+  /* ── Password strength meter ── */
+  var COLORS = ['rgba(248,113,113,.7)','#FBBF24','#34D399','#4ADE80'];
+  var LABELS = ['Weak','Fair','Good','Strong'];
 
   function getStrength(v) {
     if (!v) return 0;
     var s = 0;
-    if (v.length >= 8)           s++;
-    if (/[A-Z]/.test(v))         s++;
-    if (/[0-9]/.test(v))         s++;
-    if (/[^A-Za-z0-9]/.test(v))  s++;
+    if (v.length >= 8)          s++;
+    if (/[A-Z]/.test(v))        s++;
+    if (/[0-9]/.test(v))        s++;
+    if (/[^A-Za-z0-9]/.test(v)) s++;
     return Math.min(4, Math.max(v.length >= 6 ? 1 : 0, s));
   }
 
@@ -1005,52 +594,60 @@
     lbl.style.color = s > 0 ? COLORS[s-1] : 'var(--muted)';
   }
 
-  function checkStep3() {
-    btn3.disabled = !(inpPass.value.length >= 6 && termsOk);
+  function checkForm() {
+    signupBtn.disabled = !(
+      validateUsername(inpUsername.value.trim()).ok &&
+      validateEmail(inpEmail.value.trim()).ok &&
+      validatePassword(inpPass.value).ok &&
+      termsOk
+    );
   }
+
+  inpUsername.addEventListener('input', checkForm);
+  inpUsername.addEventListener('blur', function () {
+    validateField(this, 'wrap-username', 'hint-username', validateUsername);
+  });
+
+  inpEmail.addEventListener('input', checkForm);
+  inpEmail.addEventListener('blur', function () {
+    validateField(this, 'wrap-email', 'hint-email', validateEmail);
+  });
 
   inpPass.addEventListener('input', function () {
     updateStrength(this.value);
-    var hint = document.getElementById('hint-password');
-    var wrap = document.getElementById('wrap-password');
-    if (this.value.length < 6) {
-      wrap.classList.remove('valid'); wrap.classList.add('invalid');
-      hint.textContent = 'At least 6 characters'; hint.className = 'sp-hint show err';
-    } else {
-      wrap.classList.remove('invalid'); wrap.classList.add('valid');
-      hint.textContent = 'Password set'; hint.className = 'sp-hint show ok';
-    }
-    checkStep3();
+    validateField(this, 'wrap-password', 'hint-password', validatePassword);
+    checkForm();
   });
 
-  var termsBox   = document.getElementById('termsBox');
-  var termsCheck = document.getElementById('termsCheck');
   termsBox.addEventListener('click', function () {
     termsOk = !termsOk;
     termsCheck.checked = termsOk;
     termsBox.classList.toggle('checked', termsOk);
-    checkStep3();
+    checkForm();
   });
 
-  /* Step 3 → Final submit */
-  btn3.addEventListener('click', async function () {
-    if (!state.otpVerified) { showAlert('Please verify your email first'); return; }
-    var password = inpPass.value;
-    if (password.length < 6) { showAlert('Password must be at least 6 characters'); return; }
+  /* ── Password visibility toggle ── */
+  var eye     = document.getElementById('eyeToggle');
+  var eyeIcon = document.getElementById('eyeIcon');
+  var eyeOpen = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  var eyeOff  = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
 
-    btn3.disabled  = true;
-    btn3.innerHTML = spinnerHtml + 'Creating account\u2026';
+  eye.addEventListener('click', function () {
+    var showing = inpPass.type === 'text';
+    inpPass.type = showing ? 'password' : 'text';
+    eyeIcon.innerHTML = showing ? eyeOpen : eyeOff;
+  });
 
-    var f = document.createElement('form');
-    f.method = 'POST';
-    f.action = '/signup';
-    [['username',state.username],['email',state.email],['password',password]].forEach(function (pair) {
-      var i = document.createElement('input');
-      i.type = 'hidden'; i.name = pair[0]; i.value = pair[1];
-      f.appendChild(i);
-    });
-    document.body.appendChild(f);
-    f.submit();
+  /* ── Submit loading state ── */
+  var form = document.getElementById('signupForm');
+  form.addEventListener('submit', function () {
+    if (!form.checkValidity()) return;
+    signupBtn.disabled = true;
+    signupBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"' +
+      ' stroke-linecap="round" width="15" height="15"' +
+      ' style="animation:sp-spin .8s linear infinite"><path d="M21 12a9 9 0 11-3.2-6.9"/></svg>' +
+      'Creating account\u2026';
   });
 
 })();

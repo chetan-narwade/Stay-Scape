@@ -1,16 +1,19 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const axios    = require("axios");
 const Listing  = require("../models/listing");
 const initData = require("./data");
 
+
+
 // ─────────────────────────────────────────────────────────
 //  CONFIG
 // ─────────────────────────────────────────────────────────
-const MONGO_URL    = process.env.MONGO_URL || "mongodb+srv://Chetan_Narwade:Chetan9156@cluster0.zgyfc8j.mongodb.net/wonderlust?retryWrites=true&w=majority";
+const MONGO_URL    = "mongodb://Chetan_Narwade:Chetan9156@ac-byga9iw-shard-00-00.zgyfc8j.mongodb.net:27017,ac-byga9iw-shard-00-01.zgyfc8j.mongodb.net:27017,ac-byga9iw-shard-00-02.zgyfc8j.mongodb.net:27017/?ssl=true&replicaSet=atlas-9k9uwk-shard-0&authSource=admin&appName=Cluster0";
 const SEED_OWNER   = process.env.SEED_OWNER_ID || "64f1a2b3c4d5e6f7a8b9c0d1"; // ✅ replace with a real 24-char ObjectId from your DB
 const NOMINATIM_UA = "StayScape-Seed-Script";
 const DELAY_MS     = 1100;
-
+console.log("MONGO_URL =", MONGO_URL);
 // ─────────────────────────────────────────────────────────
 //  VALIDATE OBJECT ID
 // ─────────────────────────────────────────────────────────

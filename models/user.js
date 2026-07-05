@@ -1,9 +1,9 @@
-const mongoose              = require('mongoose');
-const passportLocalMongoose = require('passport-local-mongoose');
+const mongoose                 = require('mongoose');
+const passportLocalMongoosePkg = require('passport-local-mongoose');
+const passportLocalMongoose    = passportLocalMongoosePkg.default || passportLocalMongoosePkg;
 
 const userSchema = new mongoose.Schema({
 
-    // ── Core fields ────────────────────────────────────────
     email: {
         type:      String,
         required:  true,
@@ -16,8 +16,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim:     true
     },
-
-    // ── Profile fields ─────────────────────────────────────
     fullName: {
         type:    String,
         default: '',
@@ -34,42 +32,16 @@ const userSchema = new mongoose.Schema({
         maxlength: 200,
         trim:      true
     },
-
-    // ── Wishlist ───────────────────────────────────────────
     wishlist: [{
-        type:    mongoose.Schema.Types.ObjectId,
-        ref:     'Listing',
+        type: mongoose.Schema.Types.ObjectId,
+        ref:  'Listing',
         default: []
-    }],
-
-    // ── Verification ───────────────────────────────────────
-    isVerified: {
-        type:    Boolean,
-        default: false
-    },
-    isPending: {
-        type:    Boolean,
-        default: false
-    },
-    otpVerified: {
-        type:    Boolean,
-        default: false
-    },
-    otp:       String,
-    otpExpiry: Date,
-
-    // ── OAuth ──────────────────────────────────────────────
-    googleId: {
-        type:    String,
-        default: null
-    }
+    }]
 
 }, { timestamps: true });
 
-// ✅ passwordRequired: false allows Google/OTP users without a password
 userSchema.plugin(passportLocalMongoose, {
-    usernameField:    'email',
-    passwordRequired: false
+    usernameField: 'email'
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -38,7 +38,12 @@ app.use(express.static(path.join(__dirname, "public")));
 // ─────────────────────────────────────────────────────────
 //  SESSION
 // ─────────────────────────────────────────────────────────
-app.set("trust proxy", 1);
+const isProduction = process.env.NODE_ENV === "production";
+
+// trust proxy only matters (and is only safe) behind a real reverse proxy in production
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
 
 if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET is missing");
@@ -49,14 +54,17 @@ const sessionConfig = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  proxy: true,
   cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,                       // only require HTTPS in production
+    sameSite: isProduction ? "none" : "lax",     // "none" needs secure:true, breaks on local http
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
 };
+
+if (isProduction) {
+  sessionConfig.proxy = true;
+}
 
 app.use(session(sessionConfig));
 app.use(flash());
@@ -67,7 +75,6 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ FIX: load all strategies (Local + Google) from config/passport.js
 require('./config/passport');
 
 // ─────────────────────────────────────────────────────────
